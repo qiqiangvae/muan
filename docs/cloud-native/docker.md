@@ -1,0 +1,357 @@
+---
+title: docker 基本使用
+date: 2021-11-26 13:20:21
+tags: docker
+categories: 云原生
+summary: Docker 是一个开源的应用容器引擎，基于 Go 语言 并遵从Apache2.0协议开源。Docker 可以让开发者打包他们的应用以及依赖包到一个轻量级、可移植的容器中，然后发布到任何流行的 Linux 机器上，也可以实现虚拟化。
+---
+
+# 简介
+
+Docker 是一个开源的应用容器引擎，基于 Go 语言 并遵从Apache2.0协议开源。Docker 可以让开发者打包他们的应用以及依赖包到一个轻量级、可移植的容器中，然后发布到任何流行的 Linux 机器上，也可以实现虚拟化。
+
+# 快速上手
+
+```bash
+$ docker run hello-world
+```
+
+# 入门篇
+
+## 基本概念
+
+1. 镜像
+   Docker 镜像是一个特殊的文件系统，除了提供容器运行时所需的程序、库、资源、配置等文件外，还包含了一些为运行时准备的一些配置参数（如匿名卷、环境变量、用户等）。镜像不包含任何动态数据，其内容在构建之后也不会被改变。
+2. 容器
+   镜像（`Image`）和容器（`Container`）的关系，就像是面向对象程序设计中的 `类`和 `实例` 一样，镜像是静态的定义，容器是镜像运行时的实体。容器可以被创建、启动、停止、删除、暂停等。
+
+## 安装
+
+1. windows 环境下安装
+   教程：[https://docs.docker.com/docker-for-windows](https://docs.docker.com/docker-for-windows/)
+   下载页面： https://docs.docker.com/docker-for-windows/install
+2. linux 环境下安装
+   centos 教程：[https://docs.docker.com/engine/install/centos](https://docs.docker.com/engine/install/centos/)
+   其它 Linux 发行版本查看对应的文档，切换目录即可查看。
+3. mac 环境下安装
+   教程：[https://docs.docker.com/docker-for-windows](https://docs.docker.com/docker-for-mac)
+   下载页面： https://docs.docker.com/docker-for-mac/install
+
+## 设置
+
+国内访问 docker 镜像中心特别慢，可以参考 [阿里镜像加速教程](https://cr.console.aliyun.com/cn-hangzhou/instances/mirrors) 查看。
+
+## 基本命令
+
+- 查看本地镜像`docker images`或`docker image ls`
+- 拉取远程镜像`docker pull hello-world`
+- 运行镜像构成容器`docker run some-image`
+- 查看所有容器`docker ps -a`
+
+```bash
+$ docker ps -aq
+```
+
+- 运行/停止/删除 已存在的容器`docker start|stop|rm container-id|container-name`
+
+```bash
+$ docker stop $(docker ps )
+```
+
+- 查看某个容器的状态信息`docker inspect container-id|container-name`
+
+```bash
+$ docker inspect -f "{{.NetworkSettings.IPAddress}}" redis5
+$ docker inspect redis5 | grep IPAddress
+```
+
+- 查看容器的日志
+
+```bash
+$ docker logs -tf redis5
+```
+
+## 常用镜像使用
+
+docker 有自己的容器管理中心，类似于 github 的项目管理一样，它叫 dockerhub，地址是 https://hub.docker.com。
+
+### ubuntu
+
+```bash
+$ docker run -it ubuntu bash
+```
+
+docker 里的 ubuntu 默认没有安装软件的，所以如果要使用 vim 等工具的话，要手动安装。
+
+```bash
+$ apt update
+$ apt install vim
+$ vim demo
+```
+
+### redis
+
+1. 普通启动,此时默认端口是6379，没有密码。
+
+```bash
+$ docker run --name redis5 --rm redis:5
+```
+
+2. 指定配置文件启动，可以指定密码及其他配置。用 `-v`指定配置文件的挂载（映射），容器名称为 `qqredis`，`redis-server /usr/local/etc/redis/redis.conf`是启动命令。redis.conf 修改 requirepass 和 bind。
+
+```bash
+$ docker run -v /Users/qiqiang/Desktop/docker-supershop/redis/redis.conf:/usr/local/etc/redis/redis.conf -p 6379:6379 --rm --name redis5pass redis:5  redis-server /usr/local/etc/redis/redis.conf
+```
+
+### mysql
+
+1. 简单启动。
+
+```bash
+$ docker run --name mysql5.7 --rm -p 3306:3306 -e MYSQL_ROOT_PASSWORD=root mysql/mysql-server:5.7
+```
+
+启动完成之后可以打开另一个终端窗口进行连接。
+
+```bash
+$ docker exec -it mysql5.7 bash
+```
+
+2. 数据持久化
+
+```bash
+$ docker run --name mysql5.7 -v /Users/qiqiang/Desktop/docker-supershop/mysql/datadir:/var/lib/mysql --rm -p 3306:3306 -e MYSQL_ROOT_PASSWORD=root mysql:5.7
+```
+
+### openjdk
+
+1. 获取镜像。
+
+```bash
+$ docker run --name openjdk11 --rm -it  openjdk:11
+```
+
+启动容器之后，会默认进入 jshell 交互程序，jshell 是 jdk9 加入的新功能。
+
+2. 用 openjdk 运行我们自己的程序。
+
+```bash
+$ docker run --name openjdk11 --rm -v /Users/qiqiang/Desktop/docker-supershop/java/arthas-boot.jar:/home/arthas-demo.jar openjdk:11 java -jar /home/arthas-demo.jar
+```
+
+### nginx
+
+1. 简单启动,将 docker 容器内的80端口映射为宿主机的7070端口。
+
+```bash
+$ docker run --name nginx --rm -p 7070:80 nginx
+```
+
+2. 外置配置文件启动，搭建文件服务器。
+
+准备外置配置文件`nginx-file.conf`
+
+```nginx
+user  root;
+worker_processes  2;
+events {
+    worker_connections  1024;
+}
+
+http {
+    include       mime.types;
+    default_type  application/octet-stream;
+    sendfile        on;
+    keepalive_timeout  65;
+    # 文件服务
+    server {
+        listen  7070;
+        server_name  localhost;
+        charset utf-8;
+
+        location / {
+            root /home/fileStore;
+            expires 1d;
+            allow all;
+            autoindex on;
+            client_max_body_size 20m;
+        }
+    }    
+}
+```
+
+启动命令,将本地7070端口暴露为文件服务端口。文件存储在 `/Users/qiqiang/Desktop/fileStore` 中
+
+```bash
+$ docker run --name qqnginx-fileServer --rm -p 7070:7070 -v /Users/qiqiang/Desktop/docker-supershop/nginx/nginx-file.conf:/etc/nginx/nginx.conf -v /Users/qiqiang/Desktop/docker-supershop/nginx/fileStore:/home/fileStore nginx
+```
+
+# 进阶篇
+
+## 构造自己的个性化镜像
+
+### 基于原有容器修改`commit`
+
+由于 docker 镜像是分层存储，每一次 commit 都会生成一个黑箱镜像，因为除了制作镜像的人，其他人不知道该镜像是怎么生成的。如果是安装软件包、编译构建，那会有大量的无关内容被添加进来，如果不小心清理，将会导致镜像极为臃肿。因此， docker 官方和众多开发者都不推荐这种方式。
+
+### 基于`Dockerfile`构建
+
+1. 编写`Dockerfile`文件。
+
+```dockerfile
+FROM centos:centos7
+MAINTAINER qiqiang <qiqiangvae@foxmail.com>
+ENV NGINX_VERSION=1.16.0
+RUN mkdir /usr/nginx && \
+    cd /usr/nginx && \
+    yum install -y wget && \
+    yum install -y wget make cmake gcc gcc-c++ \
+    yum install -y pcre pcre-devel lib zlib-devel  && \
+    yum install -y openssl openssl-devel && \
+    wget http://nginx.org/download/nginx-$NGINX_VERSION.tar.gz && \
+    tar -zxf nginx-$NGINX_VERSION.tar.gz && \
+    cd nginx-$NGINX_VERSION && \
+    ./configure --prefix=/usr/nginx/nginx-$NGINX_VERSION  --conf-path=/usr/nginx/nginx-$NGINX_VERSION/nginx.conf --with-http_stub_status_module --with-http_ssl_module && \
+    make && make install && \
+    ln -s /usr/nginx/nginx-$NGINX_VERSION /etc/nginx
+CMD [ "/etc/nginx/sbin/nginx","-c","/etc/nginx/nginx.conf","-g","daemon off;" ]
+```
+
+1. 构建 Dockerfile 命令
+
+```bash
+$ docker build -t dfnginx:v1 .
+```
+
+2. 启动容器，访问localhost:7070
+
+```bash
+$ docker run --name dfnxingv1 --rm -p 7070:7070 -v /Users/qiqiang/Desktop/docker-supershop/nginx/nginx-file.conf:/etc/nginx/nginx.conf -v /Users/qiqiang/Desktop/docker-supershop/nginx/fileStore:/home/fileStore dfnginx:v1
+```
+
+## docker 容器集群编排 compose
+
+### 安装
+
+Docker 开放了 docker-compose 的源码在github上，安装教程见 https://github.com/docker/compose/releases。
+
+```bash
+$ sudo curl -L https://github.com/docker/compose/releases/download/1.24.1/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+$ sudo chmod +x /usr/local/bin/docker-compose
+```
+
+### 编排自己的容器
+
+1. 拉取项目
+   项目地址 https://github.com/qiqiangvae/ipoem
+2. 分析 Dockerfile
+
+```dockerfile
+FROM java:8
+MAINTAINER qiqiangvae@foxmail.com
+# 添加 jar 包，启动 jar 包。
+ADD ./target/ipoem*.jar /home/ipoem/ipoem.jar
+# 启动jar
+CMD java -jar /home/ipoem/ipoem.jar
+EXPOSE 8111
+FROM nginx
+MAINTAINER qiqiangvae@foxmail.com
+WORKDIR ./src/ipoem-h5
+# h5 文件
+ADD ./src/ipoem-h5/dist/ /home/nginx/ipoem-h5
+# nginx配置
+ADD ./nginx/nginx.conf /etc/nginx/nginx.conf
+CMD ["nginx","-c","/etc/nginx/nginx.conf","-g","daemon off;"]
+
+EXPOSE 7071
+```
+
+3. 附加 nginx 配置
+
+```nginx
+server {
+  listen       7071;
+  server_name  localhost;
+  charset utf-8;
+  #charset koi8-r;
+  #access_log  logs/host.access.log  main;
+  location / {
+    root /home/nginx/ipoem-h5;
+    index index.html;
+  }
+}
+```
+
+4. 分析 docker-compose
+
+```yaml
+version: '3.7'
+services:
+
+  mongo:
+    image: 'mongo:latest'
+    restart: always
+    container_name: mongo
+    volumes:
+      - /Users/qiqiang/Desktop/docker-supershop/docker-compose/mongodata:/data/db
+    ports:
+      - 27017:27017
+    networks:
+      - ipoemnet
+
+  back:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    restart: always
+    container_name: back
+    environment:
+      MONGO_HOST: mongo
+      MONGO_PORT: 27017
+    ports:
+      - 8111:8111
+    depends_on:
+      - mongo
+    networks:
+      - ipoemnet
+
+  h5:
+    build:
+      context: .
+      dockerfile: ./Dockerfile-h5
+    restart: always
+    container_name: h5
+    ports:
+      - 7071:7071
+    networks:
+      - ipoemnet
+
+networks:
+  ipoemnet:
+    driver: bridge
+    name: ipoemnet
+```
+
+5. 启动
+
+```bash
+$ docker-compose up
+```
+
+6. 访问 [http://localhost:7071](http://localhost:7071/#/)
+
+7. 停止
+
+```bash
+$ docker-compose down
+```
+
+## network 容器互联
+
+敬请期待……
+
+# 附录
+
+1. docker 官方网站。[https://www.docker.com](https://www.docker.com/)
+2. docker 官方文档。https://docs.docker.com
+3. docker 中文教程。https://yeasy.gitbooks.io/docker_practice

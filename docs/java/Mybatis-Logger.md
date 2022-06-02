@@ -1,0 +1,127 @@
+---
+title: Mybatis 打印日志的插件
+date: 2021-11-22 12:49:51
+tags: mybatis
+categories: Java
+summary: 如果你在调试mybatis时打印日志的格式觉得很奇怪，不想看到那么多的 ？,那么可以试试这个插件。
+---
+
+插件代码：
+
+```java
+@Intercepts({
+        @Signature(type = Executor.class, method = "query", args = {MappedStatement.class, Object.class,
+                RowBounds.class, ResultHandler.class, CacheKey.class, BoundSql.class}),
+        @Signature(type = Executor.class, method = "query", args = {MappedStatement.class, Object.class,
+                RowBounds.class, ResultHandler.class})
+})
+@Slf4j
+public class SqlLogInterceptor implements Interceptor {
+    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.CHINA);
+    private boolean print = false;
+
+
+    @Override
+    public Object intercept(Invocation invocation) throws Throwable {
+        Object[] args = invocation.getArgs();
+        MappedStatement ms = (MappedStatement) args[0];
+        Object parameter = null;
+        //获取参数，if语句成立，表示sql语句有参数，参数格式是map形式
+        if (invocation.getArgs().length > 1) {
+            parameter = invocation.getArgs()[1];
+        }
+        BoundSql boundSql;
+        if (args.length == 4) {
+            boundSql = ms.getBoundSql(parameter);
+        } else {
+            boundSql = (BoundSql) args[5];
+        }
+        long start = System.currentTimeMillis();
+        Object result = invocation.proceed();
+        if (print) {
+            String fullSql = boundSql.getSql();
+            int size = 1;
+            try {
+                fullSql = getFullSql(ms.getConfiguration(), boundSql);
+                if (result instanceof Collection) {
+                    size = ((Collection<?>) result).size();
+                }
+            } finally {
+                log.info("耗时【{}】,结果数量【{}】,sql【{}】", System.currentTimeMillis() - start, size, fullSql);
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public Object plugin(Object o) {
+        return Plugin.wrap(o, this);
+    }
+
+    public static String getFullSql(Configuration configuration, BoundSql boundSql) {
+        // 获取参数
+        Object parameterObject = boundSql.getParameterObject();
+        List<ParameterMapping> parameterMappings = boundSql
+                .getParameterMappings();
+        // sql语句中多个空格都用一个空格代替
+        String sql = boundSql.getSql().replaceAll("[\\s]+", " ");
+        if (parameterObject != null && parameterMappings != null && parameterMappings.size() > 0) {
+            // 获取类型处理器注册器，类型处理器的功能是进行java类型和数据库类型的转换　　　　　
+            // 如果根据parameterObject.getClass(）可以找到对应的类型，则替换
+            TypeHandlerRegistry typeHandlerRegistry = configuration.getTypeHandlerRegistry();
+            if (typeHandlerRegistry.hasTypeHandler(parameterObject.getClass())) {
+                sql = sql.replaceFirst("\\?", Matcher.quoteReplacement(getParameterValue(parameterObject)));
+            } else {
+                MetaObject metaObject = configuration.newMetaObject(parameterObject);
+                // MetaObject主要是封装了originalObject对象，提供了get和set的方法用于获取和设置originalObject的属性值,
+                // 主要支持对JavaBean、Collection、Map三种类型对象的操作
+                for (ParameterMapping parameterMapping : parameterMappings) {
+                    String propertyName = parameterMapping.getProperty();
+                    if (metaObject.hasGetter(propertyName)) {
+                        Object obj = metaObject.getValue(propertyName);
+                        sql = sql.replaceFirst("\\?", Matcher.quoteReplacement(getParameterValue(obj)));
+                    } else if (boundSql.hasAdditionalParameter(propertyName)) {
+                        // 该分支是动态sql
+                        Object obj = boundSql.getAdditionalParameter(propertyName);
+                        sql = sql.replaceFirst("\\?", Matcher.quoteReplacement(getParameterValue(obj)));
+                    } else {
+                        //打印出缺失，提醒该参数缺失并防止错位
+                        sql = sql.replaceFirst("\\?", "缺失");
+                    }
+                }
+            }
+        }
+        return sql;
+    }
+
+    /**
+     * 如果参数是String，则添加单引号， 如果是日期，则转换为时间格式器并加单引号；
+     * 对参数是null和不是null的情况作了处理
+     */
+    private static String getParameterValue(Object obj) {
+        String value;
+        if (obj instanceof String) {
+            value = "'" + obj.toString() + "'";
+        } else if (obj instanceof Date) {
+            Date date = (Date) obj;
+            value = "'" + TIME_FORMATTER.format(date.toInstant()) + "'";
+        } else if (obj instanceof Temporal) {
+            Temporal date = (Temporal) obj;
+            value = "'" + TIME_FORMATTER.format(date) + "'";
+        } else {
+            if (obj != null) {
+                value = obj.toString();
+            } else {
+                value = "";
+            }
+
+        }
+        return value;
+    }
+
+    @Override
+    public void setProperties(Properties properties) {
+        this.print = (boolean) properties.getOrDefault("enableLog", false);
+    }
+}
+```
