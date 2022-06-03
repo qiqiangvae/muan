@@ -236,7 +236,9 @@ $ tar -cf archive.tar foo bar
 # 详细列举归档文件 archive.tar 中的所有文件。
 $ tar -tvf archive.tar         
 # 展开归档文件 archive.tar 中的所有文件。
-$ tar -xf archive.tar          
+$ tar -xf archive.tar   
+# 解压到指定文件夹
+$ tar -xf archive.tar -C targetDir
 ```
 
 ## 其它命令
