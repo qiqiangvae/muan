@@ -41,7 +41,7 @@ module.exports = {
       {
         text: '云原生',
         children: [
-          { text: 'Docker 基础', link: '/cloud-native/docker' },
+          { text: 'Docker', link: '/cloud-native/docker' },
           { text: 'Kubernetes', link: '/cloud-native/k8s' },
         ],
       },
@@ -93,17 +93,48 @@ module.exports = {
           ],
         },
       ],
+      '/linux': [
+        {
+          text: 'Linux',
+          children: [
+            {
+              text: 'Linux 简单有趣的命令',
+              link: '/linux/linux-simple-comand',
+            },
+            {
+              text: 'Linux-下通用-jar-启动脚本',
+              link: '/linux/linux-jar-start',
+            },
+          ],
+        },
+      ],
+      '/mysql': [
+        {
+          text: 'Mysql',
+          children: [
+            {
+              text: 'Mysql-安装总结教程',
+              link: '/mysql/mysql-install',
+            },
+          ],
+        },
+      ],
       '/cloud-native/': [
         {
           text: '云原生',
           children: [
             {
-              text: 'docker',
+              text: 'Docker',
               link: '/cloud-native/docker',
-              children: [{ text: 'Docker', link: '/cloud-native/docker' }],
+              children: [
+                {
+                  text: 'Docker 基础',
+                  link: '/cloud-native/docker/docker-base',
+                },
+              ],
             },
             {
-              text: 'K8S',
+              text: 'Kubernetes',
               link: '/cloud-native/k8s',
               children: [
                 {
