@@ -1,16 +1,10 @@
----
-title: Macos 搭建 minikube 玩转 k8s
-date: 2022-01-11 11:32:59
-tags: k8s
-categories: 云原生
-summary:
----
+# Macos 搭建 minikube 玩转 k8s
 
-# 介绍
+## 介绍
 
-官网 https://minikube.sigs.k8s.io/docs/start/
+官网 [minikube start](https://minikube.sigs.k8s.io/docs/start/)
 
-# 搭建
+## 搭建
 
 1. 安装
 
@@ -52,7 +46,7 @@ $ minikube start --image-mirror-country='cn' --dirver=docker
 alias kubectl="minikube kubectl --"
 ```
 
-# 部署应用
+## 部署应用
 
 1. 创建pod
 
@@ -90,7 +84,7 @@ $ minikube service game2048
 ❗  Because you are using a Docker driver on darwin, the terminal needs to be open to run it.
 ```
 
-访问 http://127.0.0.1:63167
+访问 [http://127.0.0.1:63167](http://127.0.0.1:63167)
 
 或者通过端口转发方式
 
@@ -100,9 +94,9 @@ Forwarding from 127.0.0.1:4433 -> 80
 Forwarding from [::1]:4433 -> 80
 ```
 
-访问 http://127.0.0.1:4433
+访问 [http://127.0.0.1:4433](http://127.0.0.1:4433)
 
-# 控制台
+## 控制台
 
 ```bash
 $ minikube dashboard

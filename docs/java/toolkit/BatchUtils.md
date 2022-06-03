@@ -42,6 +42,10 @@ public void withoutBatchUtils() {
 
 直接上代码：
 
+::: tip
+OptionalCollection 是模仿 Optional 定义的集合类的 Optional，参考 <a href='./OptionalCollection'>OptionalCollection</a>。
+:::
+
 ```java
 import org.nature.forest.common.java.util.OptionalCollection;
 
@@ -96,8 +100,6 @@ public class BatchUtils {
     }
 }
 ```
-
-**注意**：OptionalCollection 是模范 Optional 定义的集合类的 Optional，可参考 [github 代码 OptionalCollection](https://github.com/qiqiangvae/forest/blob/main/forest-common/src/main/java/org/nature/forest/common/java/util/OptionalCollection.java)
 
 使用的时候可以这样使用：
 
@@ -211,12 +213,12 @@ public void execute2() {
       }
     }
   }, BatchUtils.Factory
-                              .builder()
-                              .add(clazz -> clazz.equals(Object.class), optionalCollection -> optionalCollection.isNotEmpty(System.out::println))
-                              .add(clazz -> clazz.equals(String.class), optionalCollection -> optionalCollection.isNotEmpty(System.out::println))
-                              .add(clazz -> clazz.equals(Integer.class), optionalCollection -> optionalCollection.isNotEmpty(System.out::println))
-                              .add(clazz -> true, optionalCollection -> optionalCollection.isNotEmpty(item -> System.out.println("全量打印" + item)))
-                              .build());
+        .builder()
+        .add(clazz -> clazz.equals(Object.class), optionalCollection -> optionalCollection.isNotEmpty(System.out::println))
+        .add(clazz -> clazz.equals(String.class), optionalCollection -> optionalCollection.isNotEmpty(System.out::println))
+        .add(clazz -> clazz.equals(Integer.class), optionalCollection -> optionalCollection.isNotEmpty(System.out::println))
+        .add(clazz -> true, optionalCollection -> optionalCollection.isNotEmpty(item -> System.out.println("全量打印" + item)))
+        .build());
   System.out.println(l);
 }
 ```

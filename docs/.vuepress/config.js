@@ -10,7 +10,7 @@ module.exports = {
     searchPlugin({
       locales: {
         '/': {
-          placeholder: '搜索',
+          placeholder: '搜索一下',
         },
       },
     }),
@@ -102,7 +102,6 @@ module.exports = {
                   text: 'ArrayBlockingQueue 源码解析',
                   link: '/java/concurrent/ArrayBlockingQueue-Source.md',
                 },
-
                 {
                   text: '造火箭从 synchronized 开始',
                   link: '/java/concurrent/synchronized.md',
@@ -113,6 +112,10 @@ module.exports = {
               text: 'Java 工具类',
               link: '/java/toolkit',
               children: [
+                {
+                  text: 'OptionalCollection 工具',
+                  link: '/java/toolkit/OptionalCollection.md',
+                },
                 {
                   text: 'BatchUtils 批处理',
                   link: '/java/toolkit/BatchUtils.md',
@@ -207,11 +210,11 @@ module.exports = {
               link: '/cloud-native/k8s',
               children: [
                 {
-                  text: 'Macos-minikube',
+                  text: 'Macos 搭建 minikube',
                   link: '/cloud-native/k8s/Macos-minikube',
                 },
                 {
-                  text: 'Job与CronJob',
+                  text: 'Job 与 CronJob',
                   link: '/cloud-native/k8s/Job-and-CronJob',
                 },
               ],

@@ -21,10 +21,9 @@ public void rebuildSelector() {
 }
 ```
 
-当 select 次数大于 512次（该数字可以通过参数io.netty.selectorAutoRebuildThreshold配置）的时候会出发。
+当 select 次数大于 512次（该数字可以通过参数`io.netty.selectorAutoRebuildThreshold`配置）的时候会触发。
 
 看看重建 Selector 做了什么。
-
 
 ```java
 private void rebuildSelector0() {
@@ -44,7 +43,7 @@ private void rebuildSelector0() {
         return;
     }
 
-    // Register all channels to the new Selector.
+    // 将所有的 channels 注册到新的 Selector 上.
     int nChannels = 0;
     for (SelectionKey key: oldSelector.keys()) {
         Object a = key.attachment();
@@ -79,7 +78,6 @@ private void rebuildSelector0() {
     unwrappedSelector = newSelectorTuple.unwrappedSelector;
 
     try {
-        // time to close the old selector as everything else is registered to the new one
         // 因为所有的事件都注册到新的 Selector 上了，是时候关闭旧的 Selector 了
         oldSelector.close();
     } catch (Throwable t) {
@@ -93,8 +91,6 @@ private void rebuildSelector0() {
     }
 }
 ```
-
-
 
 1. 新建一个 Selector。
 2. 将注册到旧的 Selector 上的事件重新注册到新的 Selector 上。
