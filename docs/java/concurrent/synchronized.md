@@ -1,12 +1,5 @@
----
-title: 造火箭从 synchronized 开始
-date: 2021-8-230 22:07:51
-tags: [并发编程]
-categires: 后端
-top: true
-cover: true
-summary: synchronized 理论学了那么多，不如自己亲自看一看它的本质。看了这篇文章，你会更懂 synchronized。
----
+
+# 造火箭从 synchronized 开始
 
 ## synchronized 原理和对象头
 

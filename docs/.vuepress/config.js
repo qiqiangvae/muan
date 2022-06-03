@@ -59,6 +59,7 @@ module.exports = {
         link: '/mysql',
       },
     ],
+    sidebarDepth: 3,
     sidebar: {
       '/dev-infrastructure': [
         {
@@ -96,7 +97,7 @@ module.exports = {
                 },
 
                 {
-                  text: 'synchronized 理解',
+                  text: '造火箭从 synchronized 开始',
                   link: '/java/concurrent/synchronized.md',
                 },
               ],
