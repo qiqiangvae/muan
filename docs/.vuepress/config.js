@@ -5,6 +5,7 @@ module.exports = {
   lang: 'zh-CN',
   title: '作草分茶',
   description: '作草分茶的博客分享',
+  head: [['link', { rel: 'icon', href: '/images/logo.png' }]],
   plugins: [
     searchPlugin({
       locales: {
@@ -18,27 +19,30 @@ module.exports = {
     logo: '/images/logo.png',
     navbar: [
       {
-        text: 'Java 基础',
+        text: 'Java',
         children: [
           {
-            text: 'ArrayBlockingQueue',
-            link: '/java/ArrayBlockingQueue-Source.md',
+            text: 'Java 并发',
+            link: '/java/concurrent',
           },
           {
-            text: 'BatchUtils 工具类',
-            link: '/java/BatchUtils.md',
+            text: 'Java 工具类',
+            link: '/java/toolkit',
           },
-          {
-            text: 'synchronized',
-            link: '/java/synchronized.md',
-          },
+        ],
+      },
+      {
+        text: 'Java 框架',
+        children: [
+          { text: 'Spring', link: '/java-framework/spring' },
+          { text: 'Mybatis', link: '/java-framework/mybatis' },
         ],
       },
       {
         text: '云原生',
         children: [
-          { text: 'Macos-minikube', link: '/cloud-native/Macos-minikube' },
           { text: 'Docker 基础', link: '/cloud-native/docker' },
+          { text: 'Kubernetes', link: '/cloud-native/k8s' },
         ],
       },
       {
@@ -56,17 +60,36 @@ module.exports = {
           text: 'Java',
           children: [
             {
-              text: 'ArrayBlockingQueue',
-              link: '/java/ArrayBlockingQueue-Source.md',
+              text: 'Java 并发',
+              link: '/java/concurrent',
+              children: [
+                {
+                  text: 'ArrayBlockingQueue',
+                  link: '/java/concurrent/ArrayBlockingQueue-Source.md',
+                },
+
+                {
+                  text: 'synchronized',
+                  link: '/java/concurrent/synchronized.md',
+                },
+              ],
             },
             {
-              text: 'BatchUtils 工具类',
-              link: '/java/BatchUtils.md',
+              text: 'Java 工具类',
+              link: '/java/toolkit',
+              children: [
+                { text: 'BatchUtils', link: '/java/toolkit/BatchUtils.md' },
+              ],
             },
-            {
-              text: 'synchronized',
-              link: '/java/synchronized.md',
-            },
+          ],
+        },
+      ],
+      '/java-framework': [
+        {
+          text: 'Java 框架',
+          children: [
+            { text: 'Spring', link: '/java-framework/spring' },
+            { text: 'Mybatis', link: '/java-framework/mybatis' },
           ],
         },
       ],
@@ -74,8 +97,21 @@ module.exports = {
         {
           text: '云原生',
           children: [
-            { text: 'Macos-minikube', link: '/cloud-native/Macos-minikube' },
-            { text: 'Docker 基础', link: '/cloud-native/docker' },
+            {
+              text: 'docker',
+              link: '/cloud-native/docker',
+              children: [{ text: 'Docker', link: '/cloud-native/docker' }],
+            },
+            {
+              text: 'K8S',
+              link: '/cloud-native/k8s',
+              children: [
+                {
+                  text: 'Macos-minikube',
+                  link: '/cloud-native/k8s/Macos-minikube',
+                },
+              ],
+            },
           ],
         },
       ],
