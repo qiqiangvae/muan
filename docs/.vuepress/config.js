@@ -58,6 +58,13 @@ module.exports = {
         text: 'Mysql',
         link: '/mysql',
       },
+      {
+        text: '友情链接',
+        children: [
+          { text: 'Vlsion', link: 'http://www.vlsion.top/' },
+          { text: 'Elmer', link: 'https://www.elmerlxy.com/' },
+        ],
+      },
     ],
     sidebarDepth: 3,
     sidebar: {
