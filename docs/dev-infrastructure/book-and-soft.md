@@ -1,17 +1,10 @@
----
-title: 开发书籍软件分享
-date: 2021-11-10 18:00:59
-tags: [书籍软件]
-categories: 资源
-top: true
-summary: 分享一些自己收藏的技术书籍和好用的软件，有需求的朋友可以点进来看一下。如果有想分享的书籍和软件，请在评论区联系我。
----
-
-# 书籍
+# 开发书籍软件分享
+分享一些自己收藏的技术书籍和好用的软件，有需求的朋友可以点进来看一下。
+## 书籍
 
 1. [如何高效设计RDS MySQL.pptx.](https://qiqiang.online/resources/document/%E5%A6%82%E4%BD%95%E9%AB%98%E6%95%88%E8%AE%BE%E8%AE%A1RDS%20MySQL.pptx.tar.gz)
 
-# 软件
+## 软件
 
 1. hosts切换工具 [SwitchHosts](https://www.electronjs.org/apps/switchhosts).
 2. 好看好用的 Redis GUI工具 [AnotherRedisDesktopManager](https://gitee.com/qishibo/AnotherRedisDesktopManager)。

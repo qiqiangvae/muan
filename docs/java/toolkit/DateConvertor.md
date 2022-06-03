@@ -1,9 +1,4 @@
----
-title: Java 工具类之 DateConvertor 时间转换工具
-date: 2021-10-25 09:55:53
-tags: [forest,工具类]
-categories: Java
----
+# DateConvertor 时间转换工具类
 
 工作中经常很多情况下会遇到时间转换的情况，比如 Date 转 LocalDate，Date 转字符串等，所以此处提供一个简单的时间转换工具类。
 
@@ -124,5 +119,3 @@ public class DateConvertor {
     }
 }
 ```
-
-更多好用的 Java 封装和工具类可以看看我的开源项目 [forest](https://github.com/qiqiangvae/forest)。

@@ -19,6 +19,10 @@ module.exports = {
     logo: '/images/logo.png',
     navbar: [
       {
+        text: '开发基础',
+        link: '/dev-infrastructure',
+      },
+      {
         text: 'Java',
         children: [
           {
@@ -36,6 +40,7 @@ module.exports = {
         children: [
           { text: 'Spring', link: '/java-framework/spring' },
           { text: 'Mybatis', link: '/java-framework/mybatis' },
+          { text: 'Netty', link: '/java-framework/netty' },
         ],
       },
       {
@@ -55,6 +60,28 @@ module.exports = {
       },
     ],
     sidebar: {
+      '/dev-infrastructure': [
+        {
+          text: '开发书籍软件分享',
+          link: '/dev-infrastructure/book-and-soft',
+        },
+        {
+          text: '位运算基础',
+          link: '/dev-infrastructure/bit-operation',
+        },
+        {
+          text: 'Git 常用操作',
+          link: '/dev-infrastructure/git-command',
+        },
+        {
+          text: 'Nginx 入门教程',
+          link: '/dev-infrastructure/nginx-base',
+        },
+        {
+          text: '手写常用的负载均衡算法',
+          link: '/dev-infrastructure/loadbalance',
+        },
+      ],
       '/java/': [
         {
           text: 'Java',
@@ -64,12 +91,12 @@ module.exports = {
               link: '/java/concurrent',
               children: [
                 {
-                  text: 'ArrayBlockingQueue',
+                  text: 'ArrayBlockingQueue 源码解析',
                   link: '/java/concurrent/ArrayBlockingQueue-Source.md',
                 },
 
                 {
-                  text: 'synchronized',
+                  text: 'synchronized 理解',
                   link: '/java/concurrent/synchronized.md',
                 },
               ],
@@ -78,7 +105,14 @@ module.exports = {
               text: 'Java 工具类',
               link: '/java/toolkit',
               children: [
-                { text: 'BatchUtils', link: '/java/toolkit/BatchUtils.md' },
+                {
+                  text: 'BatchUtils 批处理',
+                  link: '/java/toolkit/BatchUtils.md',
+                },
+                {
+                  text: 'DateConvertor 时间转换',
+                  link: '/java/toolkit/DateConvertor.md',
+                },
               ],
             },
           ],
@@ -89,7 +123,34 @@ module.exports = {
           text: 'Java 框架',
           children: [
             { text: 'Spring', link: '/java-framework/spring' },
-            { text: 'Mybatis', link: '/java-framework/mybatis' },
+            {
+              text: 'Mybatis',
+              link: '/java-framework/mybatis',
+              children: [
+                {
+                  text: 'Mybatis 日志打印',
+                  link: '/java-framework/mybatis/Mybatis-Logger',
+                },
+              ],
+            },
+            {
+              text: 'Netty',
+              link: '/java-framework/netty',
+              children: [
+                {
+                  text: 'Java 网络编程的演进史和 epoll',
+                  link: '/java-framework/netty/Java-network-and-epoll',
+                },
+                {
+                  text: 'Netty 如何解决 NIO 100% CPU',
+                  link: '/java-framework/netty/netty-nio-100-cpu',
+                },
+                {
+                  text: 'Netty 自定义协议实战',
+                  link: '/java-framework/netty/netty-custom-protocol',
+                },
+              ],
+            },
           ],
         },
       ],
@@ -102,7 +163,7 @@ module.exports = {
               link: '/linux/linux-simple-comand',
             },
             {
-              text: 'Linux-下通用-jar-启动脚本',
+              text: 'Linux 通用 jar 启动脚本',
               link: '/linux/linux-jar-start',
             },
           ],
@@ -140,6 +201,10 @@ module.exports = {
                 {
                   text: 'Macos-minikube',
                   link: '/cloud-native/k8s/Macos-minikube',
+                },
+                {
+                  text: 'Job与CronJob',
+                  link: '/cloud-native/k8s/Job-and-CronJob',
                 },
               ],
             },

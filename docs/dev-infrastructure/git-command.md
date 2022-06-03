@@ -1,12 +1,7 @@
----
-title: Git 常用操作
-date: 2021-11-22 12:55:28
-tags: git
-categories: 开发通用
-summary: git 命令太多总是记不住，没关系，不用记住所有的命令，认真记住这些常用的命令，就可以解决很多问题了。
----
+# Git 常用操作
+git 命令太多总是记不住，没关系，不用记住所有的命令，认真记住这些常用的命令，就可以解决很多问题了。
 
-# 文件命令
+## 文件命令
 
 1. 强制从某个分支的代码更新本地代码
 
@@ -19,7 +14,7 @@ $ git reset --hard origin/master
 ```bash
 # 从暂存区移除
 $ git rm --cached filename
-# 从暂存区和工作区删除
+# 从暂存区和工作区删除
 $ git rm filename
 # 如果工作区中有修改，这时候需要强制移除
 $ git rm -f filename
@@ -31,7 +26,7 @@ $ git rm -f filename
 $ git checkout HEAD filename
 ```
 
-# 分支和仓库
+## 分支和仓库
 
 1. 查看远程地址并设置新地址git remote -v
 
@@ -56,9 +51,9 @@ $ git push [origin] :[name]
 $ git merge [name]
 ```
 
-# 标签
+## 标签
 
-# 配置信息
+## 配置信息
 
 查看配置用户名和邮箱
 

@@ -1,9 +1,4 @@
----
-title: nginx入门教程
-date: 2021-10-23 16:52:51
-tags: nginx
-categories: 中间件
----
+# nginx入门教程
 
 ## 安装教程
 

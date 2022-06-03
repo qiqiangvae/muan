@@ -1,15 +1,10 @@
----
-title: Linux 简单有趣的命令
-date: 2020-11-22 19:01:15
-tags: linux
-categories: 操作系统
----
+# Linux 简单有趣的命令
 
 本文不定期更新。
 
-# 网络命令
+## 网络命令
 
-## nc tcp连接工具
+### nc tcp连接工具
 
 nc 可以建立 TCP 连接
 
@@ -22,13 +17,13 @@ $6
 jonkee
 ```
 
-## telnet 端口测试
+### telnet 端口测试
 
 ```bash
 $ telnet mycloud 3306
 ```
 
-## ssh & sshpass 服务器连接
+### ssh & sshpass 服务器连接
 
 生成密钥对
 
@@ -75,7 +70,7 @@ $ sshpass -p {JumpPass} ssh -N -f -L {localPort}:{ServerIP}:{ServerPort} {JumpUs
 $ ssh {ServerUsername}@{ServerIP} -p 22 -o ProxyCommand='ssh -p 22 {JumpUsername}@{JumpIP} -W %h:%p'
 ```
 
-## curl 网络请求客户端
+### curl 网络请求客户端
 
 curl 命令可以用来发送 web 请求。
 
@@ -105,7 +100,7 @@ $ curl -o resp.txt http://www.baidu.com
 | 打印响应头        | -i  |            |
 | 保存响应信息       | -o  |            |
 
-## scp 服务器间复制文件
+### scp 服务器间复制文件
 
 在服务器之间复制文件和目录。`scp fileName user@ip:fileName2`。
 
@@ -116,7 +111,7 @@ $ scp demo.log dc2-user@mycloud:/home/dc2-user
 
 如果是复制目录，则需要加上参数`-r`
 
-## masscan & nmap 端口扫描
+### masscan & nmap 端口扫描
 
 masscan 和 nmap 都可以扫描服务器开放的端口，nmap 可以扫描域名，masscan不可以。masscan 扫描速度比 nmap 快很多。
 
@@ -125,7 +120,7 @@ $ sudo masscan -p1-65535 xxx.xxx.xx.xxx
 $ sudo nmap -sS -Pn -p1-65535 www.baidu.com
 ```
 
-## tcpdump 抓包工具
+### tcpdump 抓包工具
 
 tcpdump 命令可以抓取指定网卡的指定ip和端口的数据包。
 
@@ -133,9 +128,9 @@ tcpdump 命令可以抓取指定网卡的指定ip和端口的数据包。
 $ tcpdump -A dst xxx.xxx.x.xxx and port 3306 -w redis_dump.dump
 ```
 
-# 文本命令
+## 文本命令
 
-## xargs 参数转换
+### xargs 参数转换
 
 xargs 的作用是将标准输入转为命令行参数。
 
@@ -166,7 +161,7 @@ $ echo -e "韩信\t李白\t百里守约" | xargs -d "\t" echo
 | -p  | 打印需要执行的命令，询问是否执行，输入y或Y确认 |
 | -t  | 打印需要执行的命令，不需要用户确认        |
 
-## awk
+### awk
 
 ```bash
 # 每行按空格或TAB分割，输出文本中的1、4项
@@ -193,7 +188,7 @@ NF 代表当前行有多少个字段，即 NF-1代表倒数第二个字段。
 
 NR 代表当前行数。
 
-## sed
+### sed
 
 替换字符串
 
@@ -207,7 +202,7 @@ $ sed 's/原字符串/替换字符串/g'
 $ sed -n '1,10p' filename
 ```
 
-## wc 文本统计
+### wc 文本统计
 
 - -c 或 --bytes 或 --chars 只显示 Bytes 数。
 - -l 或 --lines 显示行数。
@@ -217,7 +212,7 @@ $ sed -n '1,10p' filename
 $ wc -l filename
 ```
 
-## grep 匹配
+### grep 匹配
 
 + -C n 或者 --context=n 显示前后 n 行的内容。
 
@@ -229,9 +224,9 @@ $ wc -l filename
 
 + -n 显示行数。
 
-# 压缩命令
+## 压缩命令
 
-## tar
+### tar
 
 加`-z` 表示 gzip，`-c`压缩，`-x`解压，`-v`显示过程。
 
@@ -244,9 +239,9 @@ $ tar -tvf archive.tar
 $ tar -xf archive.tar          
 ```
 
-# 其它命令
+## 其它命令
 
-## nohup 不挂断运行
+### nohup 不挂断运行
 
 no hang up 不挂断。
 
@@ -289,7 +284,7 @@ hello jonkee
 $ kill -9 80306
 ```
 
-## mv 命令冷知识
+### mv 命令冷知识
 
 mv 命令可以用来移动文件和改名，那么什么时候是移动文件什么时候是改名呢
 

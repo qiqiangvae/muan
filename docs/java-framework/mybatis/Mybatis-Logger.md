@@ -1,10 +1,6 @@
----
-title: Mybatis 打印日志的插件
-date: 2021-11-22 12:49:51
-tags: mybatis
-categories: Java
-summary: 如果你在调试mybatis时打印日志的格式觉得很奇怪，不想看到那么多的 ？,那么可以试试这个插件。
----
+# Mybatis 打印日志的插件
+
+如果你在调试mybatis时打印日志的格式觉得很奇怪，不想看到那么多的问号占位符,那么可以试试这个插件。
 
 插件代码：
 
