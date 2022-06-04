@@ -42,8 +42,8 @@ public void withoutBatchUtils() {
 
 直接上代码：
 
-::: tip
-OptionalCollection 是模仿 Optional 定义的集合类的 Optional，参考 <a href='./OptionalCollection'>OptionalCollection</a>。
+::: tip 参考
+OptionalCollection 是模仿 Optional 定义的集合类的 Optional，参考 [OptionalCollection](OptionalCollection)。
 :::
 
 ```java

@@ -1,4 +1,5 @@
 const { defaultTheme } = require('@vuepress/theme-default')
+const { containerPlugin } = require('@vuepress/plugin-container')
 const { searchPlugin } = require('@vuepress/plugin-search')
 
 module.exports = {
@@ -11,6 +12,14 @@ module.exports = {
       locales: {
         '/': {
           placeholder: '搜索一下',
+        },
+      },
+    }),
+    containerPlugin({
+      type: 'tip',
+      locales: {
+        '/': {
+          defaultInfo: '提示',
         },
       },
     }),
@@ -123,6 +132,10 @@ module.exports = {
                 {
                   text: 'DateConvertor 时间转换',
                   link: '/java/toolkit/DateConvertor.md',
+                },
+                {
+                  text: '智能日期识别工具类',
+                  link: '/java/toolkit/SmartDateUtils.md',
                 },
               ],
             },
