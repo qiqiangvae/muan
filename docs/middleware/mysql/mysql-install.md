@@ -1,13 +1,8 @@
----
-title: Mysql 安装总结教程
-date: 2020-09-10 20:32:13
-tags: [mysql]
-categories: [中间件,数据库]
----
+# Mysql 安装总结教程
 
-# CentOS
+## CentOS
 
-## 检查并卸载已安装的 mysql
+### 检查并卸载已安装的 mysql
 
 ```bash
 # 检查是否安装了mysql
@@ -20,7 +15,7 @@ $ rpm -e xxx
 $ rpm -e --nodeps xxx 
 ```
 
-## 安装
+### 安装
 
 ```bash
 # 下载mysql的rpm的包
@@ -38,7 +33,7 @@ $ wget http://uni.mirrors.163.com/mysql/Downloads/MySQL-5.7/mysql-community-serv
 $ yum -y install mysql-community-server
 ```
 
-# 初次启动和配置
+## 初次启动和配置
 
 ```bash
 # 启动
@@ -82,7 +77,7 @@ flush privileges;
 CREATE USER 'username'@'host' IDENTIFIED BY 'user-password';
 ```
 
-# 常见文件地址
+## 常见文件地址
 
 | 文件                  | 文件路径    |
 | ------------------- | ------- |
@@ -90,9 +85,9 @@ CREATE USER 'username'@'host' IDENTIFIED BY 'user-password';
 | /var/lib/mysql      | 数据库文件目录 |
 | /var/log/mysqld.log | 日志文件    |
 
-# 常见操作
+## 常见操作
 
-## 开启 binlog
+### 开启 binlog
 
 ```
 log-bin=/your-path/my-binlog
@@ -101,7 +96,7 @@ server-id=123456
 
 然后重启`systemctl restart  mysqld.service`
 
-# docker 安装 mysql
+## docker 安装 mysql
 
 [官方镜像仓库](https://hub.docker.com/_/mysql)
 
