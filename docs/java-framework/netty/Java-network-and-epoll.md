@@ -469,7 +469,7 @@ private void updateRegistrations() {
 }
 ```
 
-重点代码是`epollCtl(epfd, opcode, fd, events)`和`updated = epollWait(pollArrayAddress, NUM_EPOLLEVENTS, timeout, epfd)`。这两个方法也是本地方法，可以通过`man epoll_ctl`和`man epoll_wait`查看。
+重点代码是 `epollCtl(epfd, opcode, fd, events)` 和 `updated = epollWait(pollArrayAddress, NUM_EPOLLEVENTS, timeout, epfd)`。这两个方法也是本地方法，可以通过`man epoll_ctl`和`man epoll_wait`查看。
 至此 NIO 和 epoll 的关联关系就梳理完成了。
 
 ### epoll 工作原理

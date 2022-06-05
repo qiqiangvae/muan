@@ -5,7 +5,7 @@
 
 ### 对象头长什么样子
 
-![对象头](/images/objectHeader.jpeg)
+![对象头](/images/java/objectHeader.jpeg)
 
 
 

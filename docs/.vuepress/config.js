@@ -64,14 +64,12 @@ module.exports = {
         link: '/linux',
       },
       {
-        text: 'Mysql',
-        link: '/mysql',
-      },
-      {
-        text: '友情链接',
+        text: '中间件',
+        link: '/middleware',
         children: [
-          { text: 'Vlsion', link: 'http://www.vlsion.top/' },
-          { text: 'Elmer', link: 'https://www.elmerlxy.com/' },
+          { text: 'Mysql', link: '/middleware/mysql' },
+          { text: 'Redis', link: '/middleware/redis' },
+          { text: 'Nginx', link: '/middleware/nginx' },
         ],
       },
     ],
@@ -89,10 +87,6 @@ module.exports = {
         {
           text: 'Git 常用操作',
           link: '/dev-infrastructure/git-command',
-        },
-        {
-          text: 'Nginx 入门教程',
-          link: '/dev-infrastructure/nginx-base',
         },
         {
           text: '手写常用的负载均衡算法',
@@ -193,13 +187,31 @@ module.exports = {
           ],
         },
       ],
-      '/mysql': [
+      '/middleware': [
         {
           text: 'Mysql',
           children: [
             {
               text: 'Mysql-安装总结教程',
-              link: '/mysql/mysql-install',
+              link: '/middleware/mysql/mysql-install',
+            },
+          ],
+        },
+        {
+          text: 'Redis',
+          children: [
+            {
+              text: '一篇文章搞懂 Redis 从面试到应用',
+              link: '/middleware/redis/redis-all-in-one',
+            },
+          ],
+        },
+        {
+          text: 'Nginx',
+          children: [
+            {
+              text: 'Nginx 入门教程',
+              link: '/middleware/nginx/nginx-base',
             },
           ],
         },
