@@ -196,6 +196,10 @@ module.exports = {
               text: 'Mysql-安装总结教程',
               link: '/middleware/mysql/mysql-install',
             },
+            {
+              text: 'Mysql next-key lock加锁规则',
+              link: '/middleware/mysql/mysq-rr-lock-rule',
+            },
           ],
         },
         {
