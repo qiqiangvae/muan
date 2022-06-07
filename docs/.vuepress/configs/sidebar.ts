@@ -60,14 +60,8 @@ export const sidebar: SidebarConfig = {
     {
       text: 'Linux',
       children: [
-        {
-          text: 'Linux 简单有趣的命令',
-          link: '/linux/linux-simple-comand',
-        },
-        {
-          text: 'Linux 通用 jar 启动脚本',
-          link: '/linux/linux-jar-start',
-        },
+        '/linux/linux-simple-comand',
+        '/linux/linux-jar-start',
       ],
     },
   ],
