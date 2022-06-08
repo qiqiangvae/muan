@@ -13,7 +13,7 @@ export default defineUserConfig({
     title: '作草分茶',
     description: '作草分茶的博客分享',
     port: 2238,
-    head: [['link', {rel: 'icon', href: '/images/a8ifu-xqa6y-001.ico'}]],
+    head: [['link', {rel: 'icon', href: 'https://qiqiang.oss-cn-hangzhou.aliyuncs.com/muan/a8ifu-xqa6y-001.ico'}]],
     plugins: [
         //  全文搜索
         [pluginFullTextSearch],
@@ -30,8 +30,8 @@ export default defineUserConfig({
         }),
     ],
     theme: defaultTheme({
-        logo: '/images/logo.png',
-        logoDark: '/images/a8ifu-xqa6y-001.ico',
+        logo: 'https://qiqiang.oss-cn-hangzhou.aliyuncs.com/muan/logo.png',
+        logoDark: 'https://qiqiang.oss-cn-hangzhou.aliyuncs.com/muan/a8ifu-xqa6y-001.ico',
         locales: {
             '/': {
                 navbar,
