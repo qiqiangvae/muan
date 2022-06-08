@@ -34,7 +34,7 @@ export default defineUserConfig({
     locales: {
       '/': {
         navbar,
-        sidebar
+        sidebar,
       },
     },
   }),
