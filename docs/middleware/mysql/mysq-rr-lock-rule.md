@@ -13,6 +13,7 @@
 ::: tip 不同版本结论不一样
 
 丁奇老师的总结（丁奇老师的版本是 5.x 系列 <=5.7.24，8.0 系列 <=8.0.13）：包含了两个“原则”、两个“优化”和一个“bug”。
+
 1. 原则 1：加锁的基本单位是 next-key lock。希望你还记得，next-key lock 是前开后闭区间。
 2. 原则 2：查找过程中访问到的对象才会加锁。
 3. 优化 1：索引上的等值查询，给唯一索引加锁的时候，next-key lock 退化为行锁。
@@ -35,7 +36,7 @@
 
 ## 场景实战
 
-::: tip 
+::: tip
 
 以下案例来源于《Mysql 实战 45 讲》第 21 讲[《为什么我只改一行的语句，锁这么多》](https://time.geekbang.org/column/article/75659)。
 丁奇老师的版本是 5.x 系列 <=5.7.24，8.0 系列 <=8.0.13，我的版本是 8.0.27，我的版本以下场景测试的结果跟丁奇老师的有些出入，即丁奇老师总结的这个 bug 被修复了。
@@ -43,6 +44,9 @@
 :::
 
 第一步初始化表结构和数据。
+
+<CodeGroup>
+  <CodeGroupItem title="建表语句" active>
 
 ```sql
 CREATE TABLE `t`
@@ -53,15 +57,19 @@ CREATE TABLE `t`
     PRIMARY KEY (`id`),
     KEY `c` (`c`)
 ) ENGINE = InnoDB;
-
-insert into t
-values (0, 0, 0),
-       (5, 5, 5),
-       (10, 10, 10),
-       (15, 15, 15),
-       (20, 20, 20),
-       (25, 25, 25);
 ```
+  </CodeGroupItem>
+  <CodeGroupItem title="插入语句">
+
+```sql
+insert into t
+values (0, 0, 0),(5, 5, 5),
+(10, 10, 10),(15, 15, 15),
+(20, 20, 20),(25, 25, 25);
+```
+  </CodeGroupItem>
+</CodeGroup>
+
 
 下面开始实战场景分析。
 
