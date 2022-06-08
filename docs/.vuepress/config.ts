@@ -1,6 +1,8 @@
 const { defaultTheme } = require('@vuepress/theme-default')
 const { containerPlugin } = require('@vuepress/plugin-container')
-const { searchPlugin } = require('@vuepress/plugin-search')
+// const { searchPlugin } = require('@vuepress/plugin-search')
+import pluginFullTextSearch from "vuepress2-plugin-full-text-search";
+
 import { defineUserConfig } from '@vuepress/cli'
 import { navbar } from './configs/navbar'
 import { sidebar } from './configs/sidebar'
@@ -12,13 +14,8 @@ export default defineUserConfig({
   port: 2238,
   head: [['link', { rel: 'icon', href: '/images/a8ifu-xqa6y-001.ico' }]],
   plugins: [
-    searchPlugin({
-      locales: {
-        '/': {
-          placeholder: '搜索一下',
-        },
-      },
-    }),
+    //  全文搜索
+    [pluginFullTextSearch],
     containerPlugin({
       type: 'tip',
       locales: {

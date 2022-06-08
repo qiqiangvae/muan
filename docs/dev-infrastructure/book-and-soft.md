@@ -16,3 +16,4 @@
 6. 免费终端工具 [tabby](https://github.com/Eugeny/tabby/releases)，是 [termius](https://www.termius.com/) 的开源版。
 7. 轻量级 Api 工具，Postman 替代品 [hoppscotch](https://hoppscotch.io/cn/)。
 8. 免费好用的 Markdown 编辑器 [Mark Text](https://marktext.app/)。
+9. 开源免费的图床工具，支持多种存储方式。[uPic](https://github.com/gee1k/uPic/releases)。
