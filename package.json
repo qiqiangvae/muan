@@ -6,6 +6,7 @@
   "author": "qiqiang",
   "license": "MIT",
   "devDependencies": {
+    "@vuepress/plugin-pwa": "^2.0.0-beta.46",
     "@vuepress/plugin-search": "^2.0.0-beta.46",
     "vuepress": "^2.0.0-beta.46",
     "vuepress2-plugin-full-text-search": "^0.2.0"

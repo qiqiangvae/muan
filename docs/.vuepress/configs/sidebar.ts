@@ -5,7 +5,7 @@ export const sidebar: SidebarConfig = {
     '/dev-infrastructure/book-and-soft',
     '/dev-infrastructure/bit-operation',
     '/dev-infrastructure/git-command',
-    '/dev-infrastructure/loadbalance',
+    '/dev-infrastructure/load-balance',
   ],
   '/java/': [
     {
@@ -60,7 +60,7 @@ export const sidebar: SidebarConfig = {
     {
       text: 'Linux',
       children: [
-        '/linux/linux-simple-comand',
+        '/linux/linux-simple-command',
         '/linux/linux-jar-start',
       ],
     },
