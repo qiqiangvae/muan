@@ -9,6 +9,7 @@ export default defineUserConfig({
   lang: 'zh-CN',
   title: '作草分茶',
   description: '作草分茶的博客分享',
+  port: 2238,
   head: [['link', { rel: 'icon', href: '/images/a8ifu-xqa6y-001.ico' }]],
   plugins: [
     searchPlugin({
@@ -36,6 +37,5 @@ export default defineUserConfig({
         sidebar
       },
     },
-    sidebarDepth: 3,
   }),
 })
