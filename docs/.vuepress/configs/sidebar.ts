@@ -15,18 +15,18 @@ export const sidebar: SidebarConfig = {
           text: 'Java 并发',
           link: '/java/concurrent',
           children: [
-            '/java/concurrent/ArrayBlockingQueue-Source.md',
-            '/java/concurrent/synchronized.md'
+            '/java/concurrent/ArrayBlockingQueue-Source',
+            '/java/concurrent/synchronized'
           ],
         },
         {
           text: 'Java 工具类',
           link: '/java/toolkit',
           children: [
-            '/java/toolkit/OptionalCollection.md',
-            '/java/toolkit/BatchUtils.md',
-            '/java/toolkit/DateConvertor.md',
-            '/java/toolkit/SmartDateUtils.md',
+            '/java/toolkit/OptionalCollection',
+            '/java/toolkit/BatchUtils',
+            '/java/toolkit/DateConvertor',
+            '/java/toolkit/SmartDateUtils',
           ],
         },
       ],

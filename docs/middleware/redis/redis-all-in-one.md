@@ -197,10 +197,10 @@ replica <masterip> <masterport>
 当 slave 连接到 master 之后，发送一个 PSYNC 命令到 master，master 此时 fork 出一个子进程执行 bgsave 命令生成 rdb 文件，在生成发送 rdb 文件期间，如果有新的增删改命令执行，master 会创建一个缓冲区记录这些命令，等生成的 rdb 文件发送到 slave 之后，会将缓冲区里的命令同步给 slave 执行。
 
 全量同步流程如下：
-![image.png](/images/middleware/redis1.png)
+![redis1](https://qiqiang.oss-cn-hangzhou.aliyuncs.com/muan/redis1.png)
 主从复制也支持增量同步。如果 slave 在短时间内与 master 断开连接，可以发送带有偏移量的 PSYNC 命令进行增量同步。master 会在其内存中创建一个复制数据用的缓存队列，缓存最近一段时间的数据，maste r和它所有的 slave 都维护了复制的数据下标 offset 和 master 的进程 id，因此，当网络连接断开后，slave 会请求 master 继续进行未完成的复制，从所记录的数据下标开始。如果 master 进程 id 变化了，或者从节点数据下标 offset 太旧，已经不在 master 的缓存队列里了，那么将会进行一次全量数据的复制。
 增量同步流程如下：
-![image.png](/images/middleware/redis2.png)
+![redis2](https://qiqiang.oss-cn-hangzhou.aliyuncs.com/muan/redis2.png)
 
 ### 哨兵模式
 
