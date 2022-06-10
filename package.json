@@ -6,10 +6,13 @@
   "author": "qiqiang",
   "license": "MIT",
   "devDependencies": {
-    "@vuepress/plugin-pwa": "^2.0.0-beta.46",
-    "@vuepress/plugin-search": "^2.0.0-beta.46",
-    "vuepress": "^2.0.0-beta.46",
-    "vuepress2-plugin-full-text-search": "^0.2.0"
+    "dayjs": "^1.9.7",
+    "vuepress": "^1.9.7",
+    "vuepress-plugin-fulltext-search": "^2.2.1",
+    "vuepress-theme-vdoing": "^1.12.3",
+    "@vssue/vuepress-plugin-vssue": "^1.4.8",
+    "vuepress-plugin-one-click-copy": "^1.0.6",
+    "vuepress-plugin-zooming": "^1.1.8"
   },
   "scripts": {
     "dev": "vuepress dev docs",
