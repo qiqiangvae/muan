@@ -11,8 +11,11 @@ module.exports = {
     },
     port: 2238,
     head: [
-        ['link', {rel: 'icon', type: "image/png", href: '/images/favicon.ico',}],
-        ['meta', {name: "keywords", content: "PingPong,大中台,公共服务团队,haoxz11"}]
+        ['link', {
+            rel: 'icon',
+            type: "image/png",
+            href: 'https://qiqiang.oss-cn-hangzhou.aliyuncs.com/muan/a8ifu-xqa6y-001.ico',
+        }],
     ],
     plugins,
     theme: 'vdoing',
