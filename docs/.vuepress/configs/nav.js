@@ -7,11 +7,25 @@ module.exports = [
         text: 'Java 技术',
         items: [{
             text: 'Java 基础',
-            link: '/30.java基础/10.小工具/10.智能日期识别工具类.md'
+            items: [{
+                text: '小工具',
+                link: '/30.java基础/10.小工具/10.智能日期识别工具类'
+            }, {
+                text: '并发',
+                link: '/30.java基础/20.并发/10.造火箭从synchronized开始'
+            }]
         }, {
             text: 'Java 框架',
-            // link: '/40.java框架/10.mybatis/10.Mybatis打印日志的插件'
-            link: '/40.java框架/20.netty/10.Java网络编程的演进史和epoll'
+            items: [{
+                text: 'mybatis',
+                link: '/40.java框架/10.mybatis/10.Mybatis打印日志的插件'
+            }, {
+                text: 'netty',
+                link: '/40.java框架/20.netty/10.Java网络编程的演进史和epoll'
+            }, {
+                text: 'spring',
+                link: '/40.java框架/30.spring/Spring'
+            }],
         }]
     }, {
         text: '云原生',
