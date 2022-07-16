@@ -13,6 +13,9 @@ module.exports = [
             }, {
                 text: '并发',
                 link: '/30.java基础/20.并发/10.造火箭从synchronized开始'
+            }, {
+                text: '使用工具',
+                link: '/30.java基础/30.使用工具/10.Arthas线上排查经验'
             }]
         }, {
             text: 'Java 框架',
