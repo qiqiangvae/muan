@@ -1,0 +1,40 @@
+---
+title: 探索k8s过程中的问题和解决方案
+date: 2022-07-16 23:07:05
+permalink: /pages/cfd207/
+---
+# 探索k8s过程中的问题和解决方案
+
+## 容器怎么执行多行命令？
+
+使用 args 参数，多行命令用分号`;`隔开。
+```yaml
+initContainers:
+- name: busybox
+  image: busybox
+  command: ['/bin/sh', '-c']
+  args:
+    [
+      'wget -O /data/math-game.jar https://arthas.aliyun.com/math-game.jar;wget -O /data/arthas-boot.jar https://arthas.aliyun.com/arthas-boot.jar',
+    ]
+  volumeMounts:
+    - mountPath: /data
+      name: data
+```
+
+## 容器因为没有常驻进程启动完就结束了
+那就给容器加上一个常驻进程，如：`tail -f /dev/null`。
+```yaml
+containers:
+- name: busybox
+  image: busybox
+  resources:
+    limits:
+      memory: '128Mi'
+      cpu: '500m'
+  command: ['/bin/sh', '-c']
+  args: ['echo hello kubernetes;tail -f /dev/null']
+  volumeMounts:
+    - mountPath: /data
+      name: data
+```
