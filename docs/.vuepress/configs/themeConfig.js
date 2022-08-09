@@ -6,7 +6,7 @@ module.exports = {
     docsDir: 'docs',
     docsBranch: 'master',
     pageStyle: 'line',
-    sidebarDepth: 3,
+    sidebarDepth: 4,
     lastUpdated: "上次更新",
     // 添加导航栏
     nav,
