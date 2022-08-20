@@ -27,7 +27,7 @@ module.exports = [
                 link: '/40.java框架/20.netty/10.Java网络编程的演进史和epoll'
             }, {
                 text: 'spring',
-                link: '/40.java框架/30.spring/Spring'
+                link: '/40.java框架/30.spring/10.Spring'
             }],
         }]
     }, {
