@@ -12,5 +12,3 @@ spec:
     protocol: TCP 
     nodePort: 30379
   type: NodePort
-
-
