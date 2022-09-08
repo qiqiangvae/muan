@@ -43,4 +43,12 @@ module.exports = [
         text: '中间件',
         link: '/60.中间件/10.mysql/10.Mysql-next-key-lock加锁规则'
     },
+    {
+        text: '关于我',
+        link: '/archives/',
+        items: [{
+            text: '归档',
+            link: '/archives/'
+        }]
+    },
 ];

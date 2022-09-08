@@ -22,7 +22,7 @@ module.exports = {
 
     category: false, // 是否打开分类功能，默认true
     tag: false, // 是否打开标签功能，默认true
-    archive: false, // 是否打开归档功能，默认true
+    archive: true, // 是否打开归档功能，默认true
     updateBar: { // 最近更新栏
         showToArticle: false, // 显示到文章页底部，默认true
         moreArticle: '/archives' // “更多文章”跳转的页面，默认'/archives'
