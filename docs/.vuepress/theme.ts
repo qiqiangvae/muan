@@ -17,7 +17,7 @@ export default hopeTheme({
         "/": {
             navbar: enNavbar,
             sidebar: enSidebar,
-            footer: "Default footer",
+            footer: "轻拭沾衣新寒雨，江湖何处是故人",
             displayFooter: true,
             metaLocales: {
                 editLink: "Edit this page on GitHub",
