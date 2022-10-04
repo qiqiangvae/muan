@@ -11,8 +11,7 @@ export default hopeTheme({
         url: "https://qiqiang.online",
     },
     iconAssets: "iconfont",
-    logo: "/logo.svg",
-    docsDir: "demo/theme-docs/src",
+    logo: "/logo.png",
     pageInfo: ["Author", "Original", "Date", "Category", "Tag", "ReadingTime"],
     locales: {
         "/": {
