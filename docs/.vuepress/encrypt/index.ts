@@ -1,5 +1,5 @@
 export const encrypt = {
     config: {
-        "/life/": ["1234"],
+        "/life/": ["20220308"],
     },
 }
