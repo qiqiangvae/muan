@@ -1,5 +1,5 @@
 import {defineUserConfig} from "vuepress";
-import theme from "./theme.js";
+import theme from "./theme/theme.js";
 import {searchPlugin} from "@vuepress/plugin-search";
 
 

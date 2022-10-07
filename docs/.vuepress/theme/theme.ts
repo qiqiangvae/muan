@@ -1,11 +1,10 @@
 import {hopeTheme} from "vuepress-theme-hope";
-import {enNavbar} from "./navbar";
-import {enSidebar} from "./sidebar";
+import {myNavbar} from "./navbar";
+import {mySidebar} from "./sidebar";
 import {encrypt} from "./encrypt";
 
 export default hopeTheme({
     hostname: "https://qiqiang.online",
-
     author: {
         name: "作草分茶",
         url: "https://qiqiang.online",
@@ -15,8 +14,8 @@ export default hopeTheme({
     pageInfo: ["Author", "Original", "Date", "Category", "Tag", "ReadingTime"],
     locales: {
         "/": {
-            navbar: enNavbar,
-            sidebar: enSidebar,
+            navbar: myNavbar,
+            sidebar: mySidebar,
             footer: "轻拭沾衣新寒雨，江湖何处是故人",
             displayFooter: true,
             metaLocales: {
