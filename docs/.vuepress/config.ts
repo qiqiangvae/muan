@@ -18,7 +18,7 @@ export default defineUserConfig({
         searchPlugin({
             locales: {
                 '/': {
-                    placeholder: 'Search',
+                    placeholder: '搜索一下',
                 }
             },
         }),

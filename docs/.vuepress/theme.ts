@@ -10,7 +10,7 @@ export default hopeTheme({
         name: "作草分茶",
         url: "https://qiqiang.online",
     },
-    iconAssets: "iconfont",
+    iconAssets: "//at.alicdn.com/t/c/font_3689474_63q8mo3tqsv.css",
     logo: "/logo.png",
     pageInfo: ["Author", "Original", "Date", "Category", "Tag", "ReadingTime"],
     locales: {
