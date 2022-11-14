@@ -28,6 +28,11 @@ export const mySidebar = sidebar({
         collapsable: true,
         prefix: "toolUsage/",
         children: "structure",
+    }, {
+        text: "Jvm",
+        collapsable: true,
+        prefix: "jvm/",
+        children: "structure",
     }],
     "/linux/": "structure",
     "/middleware/": [{
