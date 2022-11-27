@@ -8,7 +8,7 @@ export const mySidebar = sidebar({
         prefix: "docker/",
         children: "structure",
     }, {
-        text: "k8s",
+        text: "kubernetes",
         collapsable: true,
         prefix: "k8s/",
         children: "structure",
