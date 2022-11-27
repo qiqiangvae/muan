@@ -36,7 +36,6 @@ export default hopeTheme({
             flowchart: true,
             gfm: true,
             imageSize: true,
-            include: true,
             katex: true,
             lazyLoad: true,
             mark: true,
@@ -65,6 +64,14 @@ export default hopeTheme({
             tabs: true,
             vpre: true,
             vuePlayground: true,
+            include: {
+                getPath: (file) => {
+                    if (file.startsWith("@document")) {
+                        return file.replace("@document", __dirname + "/../document");
+                    }
+                    return file;
+                },
+            },
         }
     },
 });
