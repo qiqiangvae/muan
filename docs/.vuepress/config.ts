@@ -25,5 +25,11 @@ export default defineUserConfig({
                 }
             },
         }),
-    ]
+    ],
+    markdown: {
+        code: {
+            // 禁用行号
+            lineNumbers: false
+        }
+    }
 });

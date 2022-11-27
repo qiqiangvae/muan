@@ -28,7 +28,10 @@ permalink: /java/jvm/8013e61/
 | -printcompilation | 当前VM执行的信息 |
 
 ```shell
-$ jstat -gc 38620
+jstat -gc 38620
+```
+输出
+```text
  S0C    S1C    S0U    S1U      EC       EU        OC         OU       MC     MU    CCSC   CCSU   YGC     YGCT    FGC    FGCT     GCT   
 10752.0 10752.0 4850.9  0.0   65536.0  55434.0   175104.0    1272.2   19328.0 18559.8 2432.0 2248.8      4    0.055   1      0.008    0.062
 ```
@@ -54,7 +57,11 @@ $ jstat -gc 38620
 ### jstack 查看 Jvm 线程状态
 
 ```shell
-$ jstack 11392
+jstack 11392
+```
+控制台输出信息如下：
+
+```text
 2022-11-14 15:56:42
 Full thread dump OpenJDK 64-Bit Server VM (25.352-b08 mixed mode):
 
