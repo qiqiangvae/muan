@@ -112,24 +112,24 @@ Full thread dump OpenJDK 64-Bit Server VM (25.352-b08 mixed mode):
 
 
 ### GC调优
-| 参数命令 | 说明 |
-| --- | --- |
-| -XX:+HeapDumpOnOutOfMemoryError | 当出现 OOM 时，自动转存dump文件 |
-| -XX:HeapDumpPath=dumpPath | 指定 dump 文件路径 |
-| -XX:MaxTenuringThreshold=15 | 设置对象在新生代的存活周期，默认15 |
-| -XX:SurvivorRatio=8 | 设置 Eden 和 Survivor S0 S1的比例，默认是8:1:1 |
-| -XX:PretenureSizeThreshold=0 | 手动设置对象直接到老年代的大小 |
-| -XX:+UseParNewGC | 指定新生代使用 ParNew 收集器 |
-| -XX:+UseConcMarkSweepGC | 指定老年代使用 CMS 收集器 |
-| -XX:+UseCMSInitiatingOccupancyOnly | Hotspot 会根据计算成本决定是否使用 CMS 收集器，可以用该参数关闭计算策略强制使用 CMS |
-| -XX:+CMSClassUnloadingEnabled | 指定 CMS 对非永久代进行回收，默认不回收 |
-| -XX:CMSInitiatingOccupancyFraction=92 | 指定老年代回收垃圾回收时的空间使用比例，默认92% |
-| -XX:CMSInitiatingPermOccupancyFraction=92 | 指定永久代回收垃圾回收时的空间使用比例，默认92% |
-| -XX:+DisableExplicitGC | 禁止使用外部调用 System.gc() 进行垃圾回收 |
-| -XX:-CMSParallelRemarkEnabled | 手动开启并行标记，节省年轻代标记时间 |
-|  -Xnoclassgc | 关闭 CLASS 的垃圾回收功能，默认20分钟这个 class 未被使用，虚拟机会卸载这个类。再次使用时重新加载 |
-| -XX:+UseG1GC | 启用 G1 收集器 |
-| -XX:+ParallelRefProcEnabled | 并行处理Reference，加快处理速度，缩短耗时。默认关闭。 |
+| 参数命令                                      | 说明                                                       |
+|-------------------------------------------|----------------------------------------------------------|
+| -XX:+HeapDumpOnOutOfMemoryError           | 当出现 OOM 时，自动转存dump文件                                     |
+| -XX:HeapDumpPath=dumpPath                 | 指定 dump 文件路径                                             |
+| -XX:MaxTenuringThreshold=15               | 设置对象在新生代的存活周期，默认15                                       |
+| -XX:SurvivorRatio=8                       | 设置 Eden 和 Survivor S0 S1的比例，默认是8:1:1                     |
+| -XX:PretenureSizeThreshold=0              | 手动设置对象直接到老年代的大小                                          |
+| -XX:+UseParNewGC                          | 指定新生代使用 ParNew 收集器                                       |
+| -XX:+UseConcMarkSweepGC                   | 指定老年代使用 CMS 收集器                                          |
+| -XX:+UseCMSInitiatingOccupancyOnly        | Hotspot 会根据计算成本决定是否使用 CMS 收集器，可以用该参数关闭计算策略强制使用 CMS       |
+| -XX:+CMSClassUnloadingEnabled             | 指定 CMS 对非永久代进行回收，默认不回收                                   |
+| -XX:CMSInitiatingOccupancyFraction=92     | 指定老年代回收垃圾回收时的空间使用比例，默认92%                                |
+| -XX:CMSInitiatingPermOccupancyFraction=92 | 指定永久代回收垃圾回收时的空间使用比例，默认92%                                |
+| -XX:+DisableExplicitGC                    | 禁止使用外部调用 System.gc() 进行垃圾回收                              |
+| -XX:-CMSParallelRemarkEnabled             | 手动开启并行标记，节省年轻代标记时间                                       |
+| -Xnoclassgc                               | 关闭 CLASS 的垃圾回收功能，默认20分钟这个 class 未被使用，虚拟机会卸载这个类。再次使用时重新加载 |
+| -XX:+UseG1GC                              | 启用 G1 收集器                                                |
+| -XX:+ParallelRefProcEnabled               | 并行处理Reference，加快处理速度，缩短耗时。默认关闭。                          |
 
 
 ### GC 日志
