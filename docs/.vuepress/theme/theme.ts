@@ -11,6 +11,7 @@ export default hopeTheme({
     },
     iconAssets: "//at.alicdn.com/t/c/font_3689474_63q8mo3tqsv.css",
     logo: "/logo.png",
+    repo: "https://github.com/qiqiangvae/muan",
     pageInfo: ["Author", "Original", "Date", "Category", "Tag", "ReadingTime"],
     locales: {
         "/": {
