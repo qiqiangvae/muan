@@ -9,10 +9,21 @@ export default hopeTheme({
         name: "作草分茶",
         url: "https://qiqiang.online",
     },
+    themeColor: {
+        blue: "#2196f3",
+        red: "#f26d6d",
+        green: "#3eaf7c",
+        orange: "#fb9b5f",
+    },
+    fullscreen: true,
     iconAssets: "//at.alicdn.com/t/c/font_3689474_63q8mo3tqsv.css",
     logo: "/logo.png",
     repo: "https://github.com/qiqiangvae/muan",
+    docsRepo: "https://github.com/qiqiangvae/muan",
+    docsBranch: "main",
+    docsDir: "/docs",
     pageInfo: ["Author", "Original", "Date", "Category", "Tag", "ReadingTime"],
+    sidebarSorter: "file-number",
     locales: {
         "/": {
             navbar: myNavbar,
@@ -20,7 +31,7 @@ export default hopeTheme({
             footer: "轻拭沾衣新寒雨，江湖何处是故人",
             displayFooter: true,
             metaLocales: {
-                editLink: "Edit this page on GitHub",
+                editLink: "编辑该文档",
             },
         },
     },
