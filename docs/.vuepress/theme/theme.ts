@@ -26,6 +26,9 @@ export default hopeTheme({
     },
     encrypt: encrypt,
     plugins: {
+        copyCode: {
+            pure: true
+        },
         mdEnhance: {
             align: true,
             attrs: true,
@@ -38,7 +41,6 @@ export default hopeTheme({
             gfm: true,
             imageSize: true,
             katex: true,
-            lazyLoad: true,
             mark: true,
             mermaid: true,
             playground: {
@@ -63,7 +65,6 @@ export default hopeTheme({
             sub: true,
             sup: true,
             tabs: true,
-            vpre: true,
             vuePlayground: true,
             include: {
                 getPath: (file) => {

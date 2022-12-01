@@ -25,7 +25,7 @@ export default defineUserConfig({
                     placeholder: '搜索一下',
                 }
             },
-        })
+        }),
     ],
     markdown: {
         code: {
