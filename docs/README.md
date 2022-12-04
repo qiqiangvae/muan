@@ -14,6 +14,6 @@ features:
     details: 工作是为了更好的生活。工作是手段，生活是目标，但两者都是我们的人生，所以我们需要享受这样的人生。
 
 copyright: false
-footer: 友情链接：<a href="http://www.vlsion.top/">Vlsion</a> | <a href="https://www.elmerlxy.com/">Elmer</a>
+footer: 友情链接：<a href="https://www.hzzh.life/">Vlsion</a> | <a href="https://www.elmerlxy.com/">Elmer</a>
 footerHtml: true
 ---
