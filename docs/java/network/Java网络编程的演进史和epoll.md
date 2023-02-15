@@ -182,8 +182,8 @@ selector.select();
 ```
 
 1. 得到一个 Selector。
-1. 将 Channel 注册到Selector上，并设置一个感兴趣的事件。
-1. 执行 selecte 方法，看看是否有 IO 事件发生。
+2. 将 Channel 注册到Selector上，并设置一个感兴趣的事件。
+3. 执行 selecte 方法，看看是否有 IO 事件发生。
 
 
 
@@ -446,8 +446,8 @@ private void updateRegistrations() {
 总结 epoll 三步走：
 
 1. epoll_create
-1. epoll_ctl
-1. epoll_wait
+2. epoll_ctl
+3. epoll_wait
 
 
 
