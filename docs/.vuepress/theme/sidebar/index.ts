@@ -29,6 +29,16 @@ export const mySidebar = sidebar({
         prefix: "toolUsage/",
         children: "structure",
     }, {
+        text: "网络编程",
+        icon: "network",
+        prefix: "network/",
+        children: "structure",
+    }, {
+        text: "spring",
+        icon: "spring",
+        prefix: "spring/",
+        children: "structure",
+    }, {
         text: "Jvm",
         icon: "java",
         prefix: "jvm/",

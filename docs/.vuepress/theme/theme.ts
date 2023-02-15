@@ -16,7 +16,7 @@ export default hopeTheme({
         orange: "#fb9b5f",
     },
     fullscreen: true,
-    iconAssets: "//at.alicdn.com/t/c/font_3689474_mtlokpenk6d.css",
+    iconAssets: "//at.alicdn.com/t/c/font_3689474_9e9uo2ji8bi.css",
     logo: "/logo.png",
     repo: "https://github.com/qiqiangvae/muan",
     docsRepo: "https://github.com/qiqiangvae/muan",
