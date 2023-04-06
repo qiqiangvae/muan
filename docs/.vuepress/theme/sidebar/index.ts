@@ -14,6 +14,11 @@ export const mySidebar = sidebar({
         children: "structure",
     },],
     "/java/": [{
+        text: "编码",
+        icon: "yidongyunkongzhitaiicon41",
+        prefix: "code/",
+        children: "structure",
+    },{
         text: "并发",
         icon: "yidongyunkongzhitaiicon41",
         prefix: "concurrency/",
