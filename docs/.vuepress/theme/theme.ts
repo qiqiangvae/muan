@@ -50,7 +50,7 @@ export default hopeTheme({
             echarts: true,
             flowchart: true,
             gfm: true,
-            imageSize: true,
+            imgSize: true,
             katex: true,
             mark: true,
             mermaid: true,
@@ -78,9 +78,9 @@ export default hopeTheme({
             tabs: true,
             vuePlayground: true,
             include: {
-                getPath: (file) => {
+                resolvePath: (file) => {
                     if (file.startsWith("@document")) {
-                        return file.replace("@document", __dirname + "/../document");
+                        return file.replace("@document",__dirname+"/../document");
                     }
                     return file;
                 },
