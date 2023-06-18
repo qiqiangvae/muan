@@ -3,6 +3,7 @@ title: Jvm 调优总结
 date: 2022-06-04 17:30:42
 permalink: /java/jvm/8013e61/
 ---
+
 # Jvm 调优总结
 
 ## 常用命令
@@ -12,25 +13,28 @@ permalink: /java/jvm/8013e61/
 该命令可以查看计算机所有的 java 进程，默认打印出 **pid** 和**文件名**。
 
 ### jstat
-| options参数 | 说明 |
-| --- | --- |
-| -class | 类加载器 |
-| -compiler | JIT |
-| -gc | GC堆状态 |
-| -gccapacity | 各区大小 |
-| -gccause | 最近一次GC统计和原因 |
-| -gcmetacapacity | 元空间状态 |
-| -gcnew | 新生代垃圾回收统计 |
-| -gcnewcapacity | 新生代内存空间统计 |
-| -gcold | 老年代垃圾回收统计 |
-| -gcoldcapacity | 老年代内存空间统计 |
-| -gcutil | 动态显示垃圾回收状态 |
-| -printcompilation | 当前VM执行的信息 |
+
+| options参数         | 说明          |
+|-------------------|-------------|
+| -class            | 类加载器        |
+| -compiler         | JIT         |
+| -gc               | GC堆状态       |
+| -gccapacity       | 各区大小        |
+| -gccause          | 最近一次GC统计和原因 |
+| -gcmetacapacity   | 元空间状态       |
+| -gcnew            | 新生代垃圾回收统计   |
+| -gcnewcapacity    | 新生代内存空间统计   |
+| -gcold            | 老年代垃圾回收统计   |
+| -gcoldcapacity    | 老年代内存空间统计   |
+| -gcutil           | 动态显示垃圾回收状态  |
+| -printcompilation | 当前VM执行的信息   |
 
 ```shell
 jstat -gc 38620
 ```
+
 输出
+
 ```text
  S0C    S1C    S0U    S1U      EC       EU        OC         OU       MC     MU    CCSC   CCSU   YGC     YGCT    FGC    FGCT     GCT   
 10752.0 10752.0 4850.9  0.0   65536.0  55434.0   175104.0    1272.2   19328.0 18559.8 2432.0 2248.8      4    0.055   1      0.008    0.062
@@ -59,6 +63,7 @@ jstat -gc 38620
 ```shell
 jstack 11392
 ```
+
 控制台输出信息如下：
 
 ```text
@@ -89,29 +94,33 @@ Full thread dump OpenJDK 64-Bit Server VM (25.352-b08 mixed mode):
         at java.lang.Thread.run(Thread.java:750)
 ```
 
+### jconsole、visualvm 图形化工具
 
-
-### jconsole、jvisualvm 图形化工具
 ### jmap dump Jvm 堆数据
+
 ## CPU 100%排查
 
 1. 找到最耗 CPU 的进程。用`top -c`显示所有进程的信息，然后输入`P`按 CPU 频率进行排序，找到最耗 CPU 的进程的 PID。
-2. 找到最耗 CPU 的线程。用`top -Hp {进程PID}`显示进程 PID 的所有线程，然后输入`P`按 CPU 频率进行排序，找到最耗 CPU 的线程 PID。
+2. 找到最耗 CPU 的线程。用`top -Hp {进程PID}`显示进程 PID 的所有线程，然后输入`P`按 CPU 频率进行排序，找到最耗 CPU 的线程
+   PID。
 3. 将线程 PID 转换成16进制。`printf "%x\n" {线程PID}`
 4. 查看栈信息。`jstack {进程PID}|grep "{线程 PID 16进制结果}" -C 10`
 
 ## 内存溢出排查
-## JVM 常用调优参数
-### 内存调优
-| 参数命令 | 说明 |
-| --- | --- |
-| -Xmn | 新生代内存最大值 |
-| -Xms/-XX:InitialHeapSize | 初始堆大小，默认物理内存的1/64 |
-| -Xmx/-XX:MaxHeapSize | 堆最大值，推荐和 -Xms 一样，默认物理内存的1/4 |
-| -Xss | 线程最大栈 |
 
+## JVM 常用调优参数
+
+### 内存调优
+
+| 参数命令                     | 说明                          |
+|--------------------------|-----------------------------|
+| -Xmn                     | 新生代内存最大值                    |
+| -Xms/-XX:InitialHeapSize | 初始堆大小，默认物理内存的1/64           |
+| -Xmx/-XX:MaxHeapSize     | 堆最大值，推荐和 -Xms 一样，默认物理内存的1/4 |
+| -Xss                     | 线程最大栈                       |
 
 ### GC调优
+
 | 参数命令                                      | 说明                                                       |
 |-------------------------------------------|----------------------------------------------------------|
 | -XX:+HeapDumpOnOutOfMemoryError           | 当出现 OOM 时，自动转存dump文件                                     |
@@ -131,11 +140,49 @@ Full thread dump OpenJDK 64-Bit Server VM (25.352-b08 mixed mode):
 | -XX:+UseG1GC                              | 启用 G1 收集器                                                |
 | -XX:+ParallelRefProcEnabled               | 并行处理Reference，加快处理速度，缩短耗时。默认关闭。                          |
 
-
 ### GC 日志
-| 参数命令 | 说明 |
-| --- | --- |
-| -verbose:gc |  |
-| -XX:+PrintGCDetails |  |
-|  -Xlog:gc* |  |
 
+| 参数命令                | 说明 |
+|---------------------|----|
+| -verbose:gc         |    |
+| -XX:+PrintGCDetails |    |
+|  -Xlog:gc*          |    |
+
+## OOM 排查
+
+生产环境发生OOM是一件非常严重的事故，所以需要很快定位问题。
+
+第一步查看当前存活的类的实例，到底是谁占用了内存。
+
+```shell
+# 12345 是pid，这个命令是找出排名前18个类的占用（因为有两行表头）
+# jmap -histo:live 这个命令执行，JVM 会先触发 Full GC，然后再统计信息
+jmap -histo 12345 | head -n 20
+```
+
+可以看到结果如下
+
+```
+ num     #instances         #bytes  class name (module)
+-------------------------------------------------------
+   1:       1558100       90686008  [B (java.base@17.0.6)
+   2:        925359       37014360  java.util.TreeMap$Entry (java.base@17.0.6)
+   3:       1538441       36922584  java.lang.String (java.base@17.0.6)
+   4:         49500       15334904  [I (java.base@17.0.6)
+   5:          3462       13307240  [J (java.base@17.0.6)
+   6:        114050       10431048  [Ljava.lang.Object; (java.base@17.0.6)
+   7:         50392        5939896  java.lang.Class (java.base@17.0.6)
+   8:        182148        5828736  java.util.HashMap$Node (java.base@17.0.6)
+   9:         32262        4042136  [C (java.base@17.0.6)
+  10:        104266        3336512  java.util.concurrent.ConcurrentHashMap$Node (java.base@17.0.6)
+  11:         30360        3227368  [Ljava.util.HashMap$Node; (java.base@17.0.6)
+  12:         72974        2918960  java.util.LinkedHashMap$Entry (java.base@17.0.6)
+  13:         17686        1556368  java.lang.reflect.Method (java.base@17.0.6)
+  14:         57779        1386696  java.util.ArrayList (java.base@17.0.6)
+  15:          2833        1260216  [Ljava.util.concurrent.ConcurrentHashMap$Node; (java.base@17.0.6)
+  16:         21424        1028352  java.util.HashMap (java.base@17.0.6)
+  17:         12516         901152  java.lang.reflect.Field (java.base@17.0.6)
+  18:         19072         762880  com.intellij.psi.css.impl.descriptor.CssCommonDescriptorData
+```
+
+可以看到前18个类的实例数和占用内存的大小。
