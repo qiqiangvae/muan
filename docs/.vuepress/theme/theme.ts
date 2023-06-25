@@ -16,14 +16,14 @@ export default hopeTheme({
     orange: "#fb9b5f",
   },
   fullscreen: true,
-  iconAssets: "//at.alicdn.com/t/c/font_3689474_rqwgjnyqsws.css",
+  iconAssets: "//at.alicdn.com/t/c/font_3689474_0cnr8109w3s.css",
   logo: "/logo.png",
   repo: "https://github.com/qiqiangvae/muan",
   docsRepo: "https://github.com/qiqiangvae/muan",
   docsBranch: "main",
   docsDir: "/docs",
   pageInfo: ["Author", "Original", "Date", "Category", "Tag", "ReadingTime"],
-  sidebarSorter: "file-number",
+  sidebarSorter: "filename",
   locales: {
     "/": {
       navbar: myNavbar,
@@ -37,9 +37,6 @@ export default hopeTheme({
   },
   encrypt: encrypt,
   plugins: {
-    copyCode: {
-      pure: true
-    },
     mdEnhance: {
       align: true,
       attrs: true,

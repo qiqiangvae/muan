@@ -7,5 +7,5 @@ export const myNavbar = navbar([
     {text: "云原生", icon: "kubernetes", link: "/cloudNative/", activeMatch: "/cloudNative"},
     {text: "Linux", icon: "linux", link: "/linux/db53d7"},
     {text: "中间件", icon: "zhongjianjian", link: "/middleware/", activeMatch: "/middleware"},
-    // {text: "我的生活", icon: "cha2", link: "/life"},
+    {text: "学习笔记", icon: "note", link: "/note/systemArchitecture/hardware/", activeMatch: "/note"},
 ]);
