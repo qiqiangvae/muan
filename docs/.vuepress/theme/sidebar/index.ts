@@ -4,15 +4,15 @@ export const mySidebar = sidebar({
   "/dev/": "structure",
   "/advancedTechnology/": [
     {
-      text: "云原生",
-      icon: "k8s",
-      prefix: "cloudNative/",
-      children: "structure",
-    },
-    {
       text: "大模型",
       icon: "llm",
       prefix: "llm/",
+      children: "structure",
+    },
+    {
+      text: "云原生",
+      icon: "k8s",
+      prefix: "cloudNative/",
       children: "structure",
     },
   ],
