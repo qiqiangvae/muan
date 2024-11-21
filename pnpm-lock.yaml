@@ -11,9 +11,9 @@ importers:
       '@vue/repl':
         specifier: ^4.4.2
         version: 4.4.2
-      marked:
+      markdown-it:
         specifier: ^14.1.0
-        version: 14.1.4
+        version: 14.1.0
     devDependencies:
       '@vuepress/bundler-vite':
         specifier: 2.0.0-rc.18
@@ -3894,7 +3894,8 @@ snapshots:
       punycode.js: 2.3.1
       uc.micro: 2.1.0
 
-  marked@14.1.4: {}
+  marked@14.1.4:
+    optional: true
 
   mathjax-full@3.2.2:
     dependencies:
