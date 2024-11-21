@@ -60,7 +60,14 @@ export const mySidebar = sidebar({
       children: "structure",
     },
   ],
-  "/linux/": "structure",
+  "/linux/": [
+    {
+      text: "命令手册",
+      icon: "tools-hardware",
+      prefix: "command/",
+      children: "structure",
+    },
+  ],
   "/middleware/": [
     {
       text: "Mysql",

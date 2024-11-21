@@ -1,7 +1,7 @@
 ---
 title: Grafana 安装及使用
 date: 2022-06-02 18:53:20
-permalink: /middleware/grafana/b902c2
+permalink: /middleware/grafana/b902c2/
 ---
 
 # Grafana 安装及使用
