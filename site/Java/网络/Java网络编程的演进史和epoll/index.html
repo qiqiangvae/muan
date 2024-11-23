@@ -1,0 +1,3214 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../../%E7%BC%96%E7%A0%81/10.Java%E5%B8%B8%E7%94%A8%E7%BC%96%E7%A0%81%E6%8A%80%E5%B7%A7/">
+      
+      
+        <link rel="next" href="../../../Linux/20.Linux%E4%B8%8B%E9%80%9A%E7%94%A8jar%E5%90%AF%E5%8A%A8%E8%84%9A%E6%9C%AC/">
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.45">
+    
+    
+      
+        <title>Java 网络编程的演进史和 epoll - 作草分茶</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.0253249f.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#java-epoll" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="作草分茶" class="md-header__button md-logo" aria-label="作草分茶" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            作草分茶
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Java 网络编程的演进史和 epoll
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        
+  
+    
+  
+  首页
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../" class="md-tabs__link">
+          
+  
+  Java
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../Linux/20.Linux%E4%B8%8B%E9%80%9A%E7%94%A8jar%E5%90%AF%E5%8A%A8%E8%84%9A%E6%9C%AC/" class="md-tabs__link">
+          
+  
+  Linux
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../%E4%B8%AD%E9%97%B4%E4%BB%B6/" class="md-tabs__link">
+          
+  
+  中间件
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../%E5%89%8D%E6%B2%BF%E6%8A%80%E6%9C%AF/" class="md-tabs__link">
+          
+  
+  前沿技术
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../%E5%8D%9A%E5%AE%A2/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/1.%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A1%AC%E4%BB%B6/" class="md-tabs__link">
+          
+  
+  博客
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../%E5%BC%80%E5%8F%91%E6%8A%80%E6%9C%AF/1.%E5%BC%80%E5%8F%91%E8%BD%AF%E4%BB%B6%E5%92%8C%E9%85%8D%E7%BD%AE%E5%88%86%E4%BA%AB/" class="md-tabs__link">
+          
+  
+  开发技术
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="作草分茶" class="md-nav__button md-logo" aria-label="作草分茶" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    作草分茶
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    首页
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Java
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Java
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Java 基础
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    JVM
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            JVM
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../JVM/Jvm%E8%B0%83%E4%BC%98%E6%80%BB%E7%BB%93/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Jvm 调优总结
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../JVM/NIO%E6%B5%8B%E8%AF%95%E5%A0%86%E5%86%85%E5%86%85%E5%AD%98%E5%92%8C%E7%9B%B4%E6%8E%A5%E5%86%85%E5%AD%98/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NIO 测试堆内内存和直接内存
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    工具使用
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            工具使用
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/10.Arthas%E7%BA%BF%E4%B8%8A%E6%8E%92%E6%9F%A5%E7%BB%8F%E9%AA%8C/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Arthas线上排查经验
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_4" id="__nav_2_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    工具类
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            工具类
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../%E5%B7%A5%E5%85%B7%E7%B1%BB/10.%E6%99%BA%E8%83%BD%E6%97%A5%E6%9C%9F%E8%AF%86%E5%88%AB%E5%B7%A5%E5%85%B7%E7%B1%BB/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    智能日期识别工具类
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../%E5%B7%A5%E5%85%B7%E7%B1%BB/30.%E6%97%B6%E9%97%B4%E8%BD%AC%E6%8D%A2%E5%B7%A5%E5%85%B7%E7%B1%BB/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    时间转换工具类
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_5" id="__nav_2_5_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    并发
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_5">
+            <span class="md-nav__icon md-icon"></span>
+            并发
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../%E5%B9%B6%E5%8F%91/10.%E9%80%A0%E7%81%AB%E7%AE%AD%E4%BB%8Esynchronized%E5%BC%80%E5%A7%8B/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    造火箭从synchronized开始
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../%E5%B9%B6%E5%8F%91/20.ArrayBlockingQueue%E9%98%BB%E5%A1%9E%E9%98%9F%E5%88%97/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ArrayBlockingQueue 阻塞队列
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_6" id="__nav_2_6_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    编码
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_6">
+            <span class="md-nav__icon md-icon"></span>
+            编码
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../%E7%BC%96%E7%A0%81/10.Java%E5%B8%B8%E7%94%A8%E7%BC%96%E7%A0%81%E6%8A%80%E5%B7%A7/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Java常用编码技巧
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_7" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2_7" id="__nav_2_7_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    网络
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_7_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2_7">
+            <span class="md-nav__icon md-icon"></span>
+            网络
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Java 网络编程的演进史和 epoll
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Java 网络编程的演进史和 epoll
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#bio" class="md-nav__link">
+    <span class="md-ellipsis">
+      BIO
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nio" class="md-nav__link">
+    <span class="md-ellipsis">
+      NIO
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="NIO">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#nio_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      普通 NIO 编程
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nio_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      多路复用 NIO 编程
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#netty" class="md-nav__link">
+    <span class="md-ellipsis">
+      Netty
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      客户端连接测试
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nio-epoll" class="md-nav__link">
+    <span class="md-ellipsis">
+      NIO 多路复用原理详解（epoll）
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="NIO 多路复用原理详解（epoll）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#selector-selector-selectoropen" class="md-nav__link">
+    <span class="md-ellipsis">
+      Selector selector = Selector.open()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#selectablechannelregisterselector-selectionkeyop_accept" class="md-nav__link">
+    <span class="md-ellipsis">
+      SelectableChannel.register(selector, SelectionKey.OP_ACCEPT)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#selectorselect" class="md-nav__link">
+    <span class="md-ellipsis">
+      selector.select()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#epoll" class="md-nav__link">
+    <span class="md-ellipsis">
+      epoll 工作原理
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Linux
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Linux
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Linux/20.Linux%E4%B8%8B%E9%80%9A%E7%94%A8jar%E5%90%AF%E5%8A%A8%E8%84%9A%E6%9C%AC/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Linux 下通用 jar 启动脚本
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    命令
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            命令
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Linux/%E5%91%BD%E4%BB%A4/10.Linux%E7%AE%80%E5%8D%95%E6%9C%89%E8%B6%A3%E7%9A%84%E5%91%BD%E4%BB%A4/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Linux 简单有趣的命令
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    中间件
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            中间件
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../%E4%B8%AD%E9%97%B4%E4%BB%B6/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    中间件
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Clickhouse
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            Clickhouse
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../%E4%B8%AD%E9%97%B4%E4%BB%B6/clickhouse/10.ClickHouse%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ClickHouse 入门教程
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Grafana
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_3">
+            <span class="md-nav__icon md-icon"></span>
+            Grafana
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../%E4%B8%AD%E9%97%B4%E4%BB%B6/grafana/Grafana%E5%AE%89%E8%A3%85%E5%8F%8A%E4%BD%BF%E7%94%A8/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Grafana 安装及使用
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_4" id="__nav_4_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Mysql
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_4">
+            <span class="md-nav__icon md-icon"></span>
+            Mysql
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../%E4%B8%AD%E9%97%B4%E4%BB%B6/mysql/10.Mysql-next-key-lock%E5%8A%A0%E9%94%81%E8%A7%84%E5%88%99/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Mysql next-key lock加锁规则
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../%E4%B8%AD%E9%97%B4%E4%BB%B6/mysql/20.Mysql%E5%AE%89%E8%A3%85%E6%80%BB%E7%BB%93%E6%95%99%E7%A8%8B/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Mysql 安装总结教程
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../%E4%B8%AD%E9%97%B4%E4%BB%B6/mysql/30.%E5%BC%80%E5%8F%91%E8%BF%87%E7%A8%8B%E4%B8%ADmysql%E6%AD%BB%E9%94%81%E6%8E%92%E6%9F%A5%E6%B1%87%E6%80%BB/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    开发过程中mysql死锁排查汇总
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../%E4%B8%AD%E9%97%B4%E4%BB%B6/mysql/40.Mysql%E4%B8%80%E4%BA%9B%E5%91%BD%E4%BB%A4%E5%92%8Csql%E8%AE%B0%E5%BD%95/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Mysql 一些命令和sql记录
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_5" id="__nav_4_5_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Nginx
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_5">
+            <span class="md-nav__icon md-icon"></span>
+            Nginx
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../%E4%B8%AD%E9%97%B4%E4%BB%B6/nginx/10.nginx%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    nginx入门教程
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_6" id="__nav_4_6_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Prometheus
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_6">
+            <span class="md-nav__icon md-icon"></span>
+            Prometheus
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../%E4%B8%AD%E9%97%B4%E4%BB%B6/prometheus/Prometheus-PromQL%E8%AF%AD%E6%B3%95/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Prometheus PromQL 语法
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../%E4%B8%AD%E9%97%B4%E4%BB%B6/prometheus/Prometheus%E5%85%A5%E9%97%A8/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Prometheus入门
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_7" id="__nav_4_7_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Redis
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_7">
+            <span class="md-nav__icon md-icon"></span>
+            Redis
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../%E4%B8%AD%E9%97%B4%E4%BB%B6/redis/10.%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0%E6%90%9E%E6%87%82Redis%E4%BB%8E%E9%9D%A2%E8%AF%95%E5%88%B0%E5%BA%94%E7%94%A8/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    一篇文章搞懂 Redis 从面试到应用
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    前沿技术
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            前沿技术
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../%E5%89%8D%E6%B2%BF%E6%8A%80%E6%9C%AF/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    前沿技术
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_2" id="__nav_5_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Llm
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_2">
+            <span class="md-nav__icon md-icon"></span>
+            Llm
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../%E5%89%8D%E6%B2%BF%E6%8A%80%E6%9C%AF/llm/%2010.%E6%9C%AC%E5%9C%B0%E4%BD%BF%E7%94%A8OLLAMA%E6%90%AD%E5%BB%BA%E5%A4%A7%E6%A8%A1%E5%9E%8B/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    本地使用OLLAMA搭建大模型
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_3" id="__nav_5_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    云原生
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_3">
+            <span class="md-nav__icon md-icon"></span>
+            云原生
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../%E5%89%8D%E6%B2%BF%E6%8A%80%E6%9C%AF/%E4%BA%91%E5%8E%9F%E7%94%9F/1.docker%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    docker 基本使用
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../%E5%89%8D%E6%B2%BF%E6%8A%80%E6%9C%AF/%E4%BA%91%E5%8E%9F%E7%94%9F/10.k8s-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    k8s 常用命令
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../%E5%89%8D%E6%B2%BF%E6%8A%80%E6%9C%AF/%E4%BA%91%E5%8E%9F%E7%94%9F/2.docker%E4%BB%A3%E7%90%86%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%85%8D%E7%BD%AE/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    docker 代理服务器配置
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../%E5%89%8D%E6%B2%BF%E6%8A%80%E6%9C%AF/%E4%BA%91%E5%8E%9F%E7%94%9F/20.k8s%E4%B9%8BJob%E4%B8%8ECronJob/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    k8s之Job与CronJob
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../%E5%89%8D%E6%B2%BF%E6%8A%80%E6%9C%AF/%E4%BA%91%E5%8E%9F%E7%94%9F/30.Macos-minikube/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Macos-minikube
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../%E5%89%8D%E6%B2%BF%E6%8A%80%E6%9C%AF/%E4%BA%91%E5%8E%9F%E7%94%9F/50.Ubuntu%E4%BD%BF%E7%94%A8kubeadm%E5%AE%89%E8%A3%85k8s%E9%9B%86%E7%BE%A4/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Ubuntu使用kubeadm安装k8s集群
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../%E5%89%8D%E6%B2%BF%E6%8A%80%E6%9C%AF/%E4%BA%91%E5%8E%9F%E7%94%9F/60.%E6%8E%A2%E7%B4%A2k8s%E8%BF%87%E7%A8%8B%E4%B8%AD%E7%9A%84%E9%97%AE%E9%A2%98%E5%92%8C%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    探索k8s过程中的问题和解决方案
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../%E5%89%8D%E6%B2%BF%E6%8A%80%E6%9C%AF/%E4%BA%91%E5%8E%9F%E7%94%9F/70.k8s%E6%8C%81%E4%B9%85%E5%8C%96%E5%AD%98%E5%82%A8/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    k8s持久化存储
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../%E5%89%8D%E6%B2%BF%E6%8A%80%E6%9C%AF/%E4%BA%91%E5%8E%9F%E7%94%9F/80.k8s%E4%BD%BF%E7%94%A8StatefulSet%E6%90%AD%E5%BB%BARedis%E4%B8%BB%E4%BB%8E%E6%A8%A1%E5%BC%8F/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    k8s 使用 StatefulSet 搭建 Redis 主从模式
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../%E5%89%8D%E6%B2%BF%E6%8A%80%E6%9C%AF/%E4%BA%91%E5%8E%9F%E7%94%9F/90.K8s%E9%83%A8%E7%BD%B2%E5%8D%95%E6%9C%BAMysql/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    K8s部署单机Mysql
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    博客
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            博客
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_1" id="__nav_6_1_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    系统架构
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_1">
+            <span class="md-nav__icon md-icon"></span>
+            系统架构
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../%E5%8D%9A%E5%AE%A2/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/1.%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A1%AC%E4%BB%B6/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    计算机硬件
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../%E5%8D%9A%E5%AE%A2/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/2.%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    操作系统
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../%E5%8D%9A%E5%AE%A2/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/3.%E6%95%B0%E6%8D%AE%E5%BA%93/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    数据库
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../%E5%8D%9A%E5%AE%A2/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/4.%E5%B5%8C%E5%85%A5%E5%BC%8F/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    嵌入式
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../%E5%8D%9A%E5%AE%A2/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/5.%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    计算机网络
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../%E5%8D%9A%E5%AE%A2/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/6.%E7%B3%BB%E7%BB%9F%E9%85%8D%E7%BD%AE%E4%B8%8E%E6%80%A7%E8%83%BD%E8%AF%84%E4%BB%B7/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    系统配置与性能评价
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../%E5%8D%9A%E5%AE%A2/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/7.%E4%BF%A1%E6%81%AF%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    信息系统基础知识
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    开发技术
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            开发技术
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../%E5%BC%80%E5%8F%91%E6%8A%80%E6%9C%AF/1.%E5%BC%80%E5%8F%91%E8%BD%AF%E4%BB%B6%E5%92%8C%E9%85%8D%E7%BD%AE%E5%88%86%E4%BA%AB/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    开发软件和配置分享
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../%E5%BC%80%E5%8F%91%E6%8A%80%E6%9C%AF/10.%E4%BD%8D%E8%BF%90%E7%AE%97%E5%9F%BA%E7%A1%80/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    位运算基础
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../%E5%BC%80%E5%8F%91%E6%8A%80%E6%9C%AF/30.Git%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Git 常用操作
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../%E5%BC%80%E5%8F%91%E6%8A%80%E6%9C%AF/40.%E6%89%8B%E5%86%99%E5%B8%B8%E7%94%A8%E7%9A%84%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E7%AE%97%E6%B3%95/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    手写常用的负载均衡算法
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../%E5%BC%80%E5%8F%91%E6%8A%80%E6%9C%AF/50.HTTP%E7%9B%B8%E5%85%B3%E7%9F%A5%E8%AF%86%E7%82%B9%E8%AE%B0%E5%BD%95/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    HTTP相关知识点记录
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../%E5%BC%80%E5%8F%91%E6%8A%80%E6%9C%AF/60.Python%E7%AE%80%E5%8D%95%E5%B0%8F%E5%8A%9F%E8%83%BDCoding/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Python简单小功能Coding
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../%E5%BC%80%E5%8F%91%E6%8A%80%E6%9C%AF/70.%E6%8E%A2%E7%B4%A2java%E4%B8%AD%E5%A4%8D%E6%9D%82%E7%9A%84%E6%97%B6%E5%8C%BA/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    探索java中复杂的时区
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#bio" class="md-nav__link">
+    <span class="md-ellipsis">
+      BIO
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nio" class="md-nav__link">
+    <span class="md-ellipsis">
+      NIO
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="NIO">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#nio_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      普通 NIO 编程
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nio_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      多路复用 NIO 编程
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#netty" class="md-nav__link">
+    <span class="md-ellipsis">
+      Netty
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      客户端连接测试
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nio-epoll" class="md-nav__link">
+    <span class="md-ellipsis">
+      NIO 多路复用原理详解（epoll）
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="NIO 多路复用原理详解（epoll）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#selector-selector-selectoropen" class="md-nav__link">
+    <span class="md-ellipsis">
+      Selector selector = Selector.open()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#selectablechannelregisterselector-selectionkeyop_accept" class="md-nav__link">
+    <span class="md-ellipsis">
+      SelectableChannel.register(selector, SelectionKey.OP_ACCEPT)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#selectorselect" class="md-nav__link">
+    <span class="md-ellipsis">
+      selector.select()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#epoll" class="md-nav__link">
+    <span class="md-ellipsis">
+      epoll 工作原理
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="java-epoll">Java 网络编程的演进史和 epoll</h1>
+<h2 id="bio">BIO</h2>
+<pre><code class="language-java">public class BioServer {
+    private static ExecutorService executorService = Executors.newFixedThreadPool(8);
+
+    public static void main(String[] args) throws IOException {
+        // 绑定端口，启动服务器
+        ServerSocket serverSocket = new ServerSocket(9999);
+        System.out.println(&quot;服务器启动成功&quot;);
+        while (true) {
+            // 接收客户端连接，这里是阻塞的
+            Socket socket = serverSocket.accept();
+            System.out.println(socket.getRemoteSocketAddress() + &quot;已连接&quot;);
+            // 开启其它线程处理io事件
+            executorService.execute(() -&gt; {
+                try {
+                    handMsg(socket);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+    }
+
+    private static void handMsg(Socket socket) throws IOException {
+        InputStream inputStream = socket.getInputStream();
+        byte[] bytes = new byte[1024];
+        while (true) {
+            // 读取数据，这里也是阻塞的
+            inputStream.read(bytes);
+            System.out.println(new String(bytes, StandardCharsets.UTF_8));
+        }
+    }
+}
+</code></pre>
+<p>上面的代码是使用 BIO 模式编写的服务器，阻塞的原因是<code>serverSocket.accept()</code>和<code>inputStream.read(bytes)</code>都是阻塞的，虽然主线程只处理接收连接的事件，但是读取数据的时候会阻塞，此方法无法处理高并发。</p>
+<h2 id="nio">NIO</h2>
+<h3 id="nio_1">普通 NIO 编程</h3>
+<pre><code class="language-java">public class NioServer {
+    public static void main(String[] args) throws IOException {
+        // 绑定端口，启动服务器
+        ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
+        serverSocketChannel.socket().bind(new InetSocketAddress(9999));
+        // 设置非阻塞
+        serverSocketChannel.configureBlocking(false);
+        List&lt;SocketChannel&gt; channelList = new ArrayList&lt;&gt;();
+        while (true) {
+            // 接收连接事件
+            SocketChannel socketChannel = serverSocketChannel.accept();
+            if (socketChannel != null) {
+                System.out.println(&quot;连接成功&quot;);
+                socketChannel.configureBlocking(false);
+                // 设置非阻塞
+                channelList.add(socketChannel);
+            }
+            // 处理连接到客户端的io事件
+            Iterator&lt;SocketChannel&gt; iterator = channelList.iterator();
+            while (iterator.hasNext()) {
+                SocketChannel channel = iterator.next();
+                ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
+                int read = channel.read(byteBuffer);
+                if (read &gt; 0) {
+                    String msg = new String(byteBuffer.array(), StandardCharsets.UTF_8);
+                    System.out.println(channel.getRemoteAddress() + &quot;:&quot; + msg);
+                } else if (read == -1) {
+                    // 关闭连接
+                    iterator.remove();
+                }
+            }
+        }
+    }
+}
+</code></pre>
+<p>此方式使用 NIO 编写，在接收客户端连接和处理读写事件的时候都是非阻塞的。但是在处理读写事件时候，会遍历所有连接的 socket，在实际情况下，很多客户端只是连接了服务器但并没有读写操作发生，这样就会产生无用的遍历。</p>
+<h3 id="nio_2">多路复用 NIO 编程</h3>
+<pre><code class="language-java">public class NioSelectorServer {
+    public static void main(String[] args) throws IOException {
+        // 开启多路复用器
+        Selector selector = Selector.open();
+        // 开启服务器
+        ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
+        serverSocketChannel.socket().bind(new InetSocketAddress(9999));
+        System.out.println(&quot;服务器启动&quot;);
+        // 设置服务器非阻塞
+        serverSocketChannel.configureBlocking(false);
+        // 将ServerSocketChannel注册到Selector上，监听 OP_ACCEPT 事件
+        serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
+        while (true) {
+            int select = selector.select();
+            // 当有事件发生的时候，处理事件
+            if (select &gt; 0) {
+                Set&lt;SelectionKey&gt; selectionKeys = selector.selectedKeys();
+                Iterator&lt;SelectionKey&gt; selectionKeyIterator = selectionKeys.iterator();
+                if (selectionKeyIterator.hasNext()) {
+                    SelectionKey selectionKey = selectionKeyIterator.next();
+                    // 如果是连接事件
+                    if (selectionKey.isAcceptable()) {
+                        ServerSocketChannel serverSocket = (ServerSocketChannel) selectionKey.channel();
+                        // 接收客户端连接，并且设置非阻塞，然后注册SocketChannel到多路复用器上，监听读事件
+                        SocketChannel socketChannel = serverSocket.accept();
+                        System.out.println(socketChannel.getRemoteAddress() + &quot;已连接&quot;);
+                        socketChannel.configureBlocking(false);
+                        socketChannel.register(selector, SelectionKey.OP_READ);
+                    } else if (selectionKey.isReadable()) {
+                        // 如果有可读事件，那么处理数据
+                        SocketChannel socketChannel = (SocketChannel) selectionKey.channel();
+                        ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
+                        int read = socketChannel.read(byteBuffer);
+                        if (read &gt; 0) {
+                            String msg = new String(byteBuffer.array(), StandardCharsets.UTF_8);
+                            System.out.println(socketChannel.getRemoteAddress() + &quot;:&quot; + msg);
+                        } else if (read == -1) {
+                            socketChannel.close();
+                            System.out.println(socketChannel.getLocalAddress() + &quot;断开连接&quot;);
+                        }
+                    }
+                    selectionKeyIterator.remove();
+                }
+            }
+        }
+    }
+}
+</code></pre>
+<p>使用多路复用器编程是普通 NIO 编程的进阶版，该方法可以避免普通 NIO 编程的无效遍历的问题，选择性的处理各种事件。</p>
+<h2 id="netty">Netty</h2>
+<pre><code class="language-java">public class NettyServer {
+    public static void main(String[] args) {
+        ServerBootstrap serverBootstrap = new ServerBootstrap();
+        EventLoopGroup boss = new NioEventLoopGroup(1);
+        EventLoopGroup workers = new NioEventLoopGroup();
+        serverBootstrap.group(boss, workers)
+                .channel(NioServerSocketChannel.class)
+                .childHandler(new ChannelInitializer&lt;SocketChannel&gt;() {
+                    @Override
+                    protected void initChannel(SocketChannel ch) throws Exception {
+                        ch.pipeline().addLast(new StringEncoder());
+                        ch.pipeline().addLast(new StringDecoder());
+                        ch.pipeline().addLast(new SimpleChannelInboundHandler&lt;String&gt;() {
+                            @Override
+                            protected void channelRead0(ChannelHandlerContext ctx, String msg) throws Exception {
+                                System.out.println(msg);
+                            }
+                        });
+                    }
+                });
+        try {
+            ChannelFuture  channelFuture = serverBootstrap.bind(9999).sync();
+            channelFuture.channel().closeFuture().sync();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }finally {
+            boss.shutdownGracefully();
+            workers.shutdownGracefully();
+        }
+    }
+}
+</code></pre>
+<h2 id="_1">客户端连接测试</h2>
+<p>客户端连接可以使用<code>nc</code>命令。</p>
+<pre><code class="language-shell">$ nc localhost 9999
+1233
+rrrrrrrrr
+</code></pre>
+<h2 id="nio-epoll">NIO 多路复用原理详解（epoll）</h2>
+<p>NIO 多路复用编码的三个要素。</p>
+<pre><code class="language-java">Selector selector = Selector.open();
+SelectableChannel.register(selector, SelectionKey.OP_ACCEPT);
+selector.select();
+</code></pre>
+<ol>
+<li>得到一个 Selector。</li>
+<li>将 Channel 注册到Selector上，并设置一个感兴趣的事件。</li>
+<li>执行 selecte 方法，看看是否有 IO 事件发生。</li>
+</ol>
+<h3 id="selector-selector-selectoropen">Selector selector = Selector.open()</h3>
+<p>首先看是如何得到 Selector 的。看看 open 方法。</p>
+<pre><code class="language-java">public static Selector open() throws IOException {
+    return SelectorProvider.provider().openSelector();
+}
+public static SelectorProvider provider() {
+    synchronized (lock) {
+        if (provider != null)
+            return provider;
+        return AccessController.doPrivileged(
+            new PrivilegedAction&lt;SelectorProvider&gt;() {
+                public SelectorProvider run() {
+                    if (loadProviderFromProperty())
+                        return provider;
+                    if (loadProviderAsService())
+                        return provider;
+                    provider = sun.nio.ch.DefaultSelectorProvider.create();
+                    return provider;
+                }
+            });
+    }
+}
+</code></pre>
+<p>通过抽象类<code>SelectorProvider</code>获取到一个<code>SelectorProvider</code>的实现类，然后再调用该实现类的<code>openSelector()</code>方法。重点是这行代码。<code>provider = sun.nio.ch.DefaultSelectorProvider.create()</code>。那就看看<code>sun.nio.ch.DefaultSelectorProvider</code>这个类到底做了什么。在openjdk的源码中，找到三个这样的类。
+<img alt="KUcESX" src="https://qiqiang.oss-cn-hangzhou.aliyuncs.com/muan/KUcESX.jpg" /></p>
+<p>可以看到他们是针对不同的操作系统有不同的实现，这里看第一个。</p>
+<pre><code class="language-java">public static SelectorProvider create() {
+    String osname = AccessController
+        .doPrivileged(new GetPropertyAction(&quot;os.name&quot;));
+    if (osname.equals(&quot;SunOS&quot;))
+        return createProvider(&quot;sun.nio.ch.DevPollSelectorProvider&quot;);
+    if (osname.equals(&quot;Linux&quot;))
+        return createProvider(&quot;sun.nio.ch.EPollSelectorProvider&quot;);
+    return new sun.nio.ch.PollSelectorProvider();
+}
+</code></pre>
+<p>很简单的一行代码，如果操作系统是Linux，那么创建的是<code>sun.nio.ch.EPollSelectorProvider</code>。</p>
+<pre><code class="language-java">public class EPollSelectorProvider
+    extends SelectorProviderImpl{
+    public AbstractSelector openSelector() throws IOException {
+        return new EPollSelectorImpl(this);
+    }
+
+    public Channel inheritedChannel() throws IOException {
+        return InheritedChannel.getChannel();
+    }
+}
+</code></pre>
+<p>可以看到最终返回了一个<code>EPollSelectorImpl</code>类，这是<code>Selector</code>的一个实现类，它的重要成员变量和构造方法如下：</p>
+<pre><code class="language-java">// 用来中断的文件描述符
+protected int fd0;
+protected int fd1;
+// 轮询对象
+EPollArrayWrapper pollWrapper;
+// SelectionKey 的文件描述符映射
+private Map&lt;Integer,SelectionKeyImpl&gt; fdToKey;
+EPollSelectorImpl(SelectorProvider sp) throws IOException {
+    super(sp);
+    long pipeFds = IOUtil.makePipe(false);
+    fd0 = (int) (pipeFds &gt;&gt;&gt; 32);
+    fd1 = (int) pipeFds;
+    pollWrapper = new EPollArrayWrapper();
+    pollWrapper.initInterrupt(fd0, fd1);
+    fdToKey = new HashMap&lt;&gt;();
+}
+</code></pre>
+<pre><code class="language-java">EPollArrayWrapper() throws IOException {
+    // creates the epoll file descriptor
+    epfd = epollCreate();
+    // the epoll_event array passed to epoll_wait
+    int allocationSize = NUM_EPOLLEVENTS * SIZE_EPOLLEVENT;
+    pollArray = new AllocatedNativeObject(allocationSize, true);
+    pollArrayAddress = pollArray.address();
+
+    // eventHigh needed when using file descriptors &gt; 64k
+    if (OPEN_MAX &gt; MAX_UPDATE_ARRAY_SIZE)
+        eventsHigh = new HashMap&lt;&gt;();
+}
+</code></pre>
+<p>重点关注<code>epfd = epollCreate()</code>。这里调用的是一个本地方法，获取到 epoll 的文件描述符，实际调用的是linux操作系统方法<code>epoll_create</code>。
+使用<code>man epoll_create</code>命令参看操作系统函数。</p>
+<h3 id="selectablechannelregisterselector-selectionkeyop_accept">SelectableChannel.register(selector, SelectionKey.OP_ACCEPT)</h3>
+<p>第二部将 Channel 注册到 Selector 上。</p>
+<pre><code class="language-java">public final SelectionKey register(Selector sel, int ops,
+                                   Object att)
+    throws ClosedChannelException{
+        synchronized (regLock) {
+            if (!isOpen())
+                throw new ClosedChannelException();
+            if ((ops &amp; ~validOps()) != 0)
+                throw new IllegalArgumentException();
+            if (blocking)
+                throw new IllegalBlockingModeException();
+            SelectionKey k = findKey(sel);
+            if (k != null) {
+                k.interestOps(ops);
+                k.attach(att);
+            }
+            if (k == null) {
+                // New registration
+                synchronized (keyLock) {
+                    if (!isOpen())
+                        throw new ClosedChannelException();
+                    k = ((AbstractSelector)sel).register(this, ops, att);
+                    addKey(k);
+                }
+            }
+            return k;
+        }
+    }
+</code></pre>
+<p>重点代码是<code>k = ((AbstractSelector)sel).register(this, ops, att);</code></p>
+<pre><code class="language-java">protected final SelectionKey register(AbstractSelectableChannel var1, int var2, Object var3) {
+    if (!(var1 instanceof SelChImpl)) {
+        throw new IllegalSelectorException();
+    } else {
+        SelectionKeyImpl var4 = new SelectionKeyImpl((SelChImpl)var1, this);
+        var4.attach(var3);
+        synchronized(this.publicKeys) {
+            this.implRegister(var4);
+        }
+
+        var4.interestOps(var2);
+        return var4;
+    }
+}
+</code></pre>
+<p><code>implRegister</code>是一个抽象方法，最后调用到了<code>EPollSelectorImpl.implRegister</code>。</p>
+<pre><code class="language-java">protected void implRegister(SelectionKeyImpl ski) {
+    if (closed)
+        throw new ClosedSelectorException();
+    SelChImpl ch = ski.channel;
+    int fd = Integer.valueOf(ch.getFDVal());
+    fdToKey.put(fd, ski);
+    pollWrapper.add(fd);
+    keys.add(ski);
+}
+</code></pre>
+<p>这段代码里面只是对相关对象和文件描述符做了绑定。</p>
+<h3 id="selectorselect">selector.select()</h3>
+<pre><code class="language-java">public int select(long var1) throws IOException {
+    if (var1 &lt; 0L) {
+        throw new IllegalArgumentException(&quot;Negative timeout&quot;);
+    } else {
+        return this.lockAndDoSelect(var1 == 0L ? -1L : var1);
+    }
+}
+private int lockAndDoSelect(long var1) throws IOException {
+    synchronized(this) {
+        if (!this.isOpen()) {
+            throw new ClosedSelectorException();
+        } else {
+            int var10000;
+            synchronized(this.publicKeys) {
+                synchronized(this.publicSelectedKeys) {
+                    var10000 = this.doSelect(var1);
+                }
+            }
+
+            return var10000;
+        }
+    }
+}
+</code></pre>
+<p>在抽象类<code>SelectorImpl</code>中，最终调用到了<code>EPollSelectorImpl.doSelect(long timeout)</code></p>
+<pre><code class="language-java">protected int doSelect(long timeout) throws IOException {
+    if (closed)
+        throw new ClosedSelectorException();
+    processDeregisterQueue();
+    try {
+        begin();
+        pollWrapper.poll(timeout);
+    } finally {
+        end();
+    }
+    processDeregisterQueue();
+    int numKeysUpdated = updateSelectedKeys();
+    if (pollWrapper.interrupted()) {
+        // Clear the wakeup pipe
+        pollWrapper.putEventOps(pollWrapper.interruptedIndex(), 0);
+        synchronized (interruptLock) {
+            pollWrapper.clearInterrupted();
+            IOUtil.drain(fd0);
+            interruptTriggered = false;
+        }
+    }
+    return numKeysUpdated;
+}
+</code></pre>
+<p>重点是<code>pollWrapper.poll(timeout);</code>这行代码就是轮询的过程。</p>
+<pre><code class="language-java">int poll(long timeout) throws IOException {
+    updateRegistrations();
+    // 获取IO事件数量
+    updated = epollWait(pollArrayAddress, NUM_EPOLLEVENTS, timeout, epfd);
+    for (int i=0; i&lt;updated; i++) {
+        if (getDescriptor(i) == incomingInterruptFD) {
+            interruptedIndex = i;
+            interrupted = true;
+            break;
+        }
+    }
+    return updated;
+}
+/**
+ * 更新挂起的注册事件
+ **/
+private void updateRegistrations() {
+    synchronized (updateLock) {
+        int j = 0;
+        while (j &lt; updateCount) {
+            int fd = updateDescriptors[j];
+            short events = getUpdateEvents(fd);
+            boolean isRegistered = registered.get(fd);
+            int opcode = 0;
+
+            if (events != KILLED) {
+                if (isRegistered) {
+                    opcode = (events != 0) ? EPOLL_CTL_MOD : EPOLL_CTL_DEL;
+                } else {
+                    opcode = (events != 0) ? EPOLL_CTL_ADD : 0;
+                }
+                if (opcode != 0) {
+                    epollCtl(epfd, opcode, fd, events);
+                    if (opcode == EPOLL_CTL_ADD) {
+                        registered.set(fd);
+                    } else if (opcode == EPOLL_CTL_DEL) {
+                        registered.clear(fd);
+                    }
+                }
+            }
+            j++;
+        }
+        updateCount = 0;
+    }
+}
+</code></pre>
+<p>重点代码是<code>epollCtl(epfd, opcode, fd, events)</code>和<code>updated = epollWait(pollArrayAddress, NUM_EPOLLEVENTS, timeout, epfd)</code>。这两个方法也是本地方法，可以通过<code>man epoll_ctl</code>和<code>man epoll_wait</code>查看。
+至此 NIO 和 epoll 的关联关系就梳理完成了。</p>
+<h3 id="epoll">epoll 工作原理</h3>
+<p>看大神的解释，地址<a href="https://blog.csdn.net/armlinuxww/article/details/92803381">Epoll原理解析</a>
+总结 epoll 三步走：</p>
+<ol>
+<li>epoll_create</li>
+<li>epoll_ctl</li>
+<li>epoll_wait</li>
+</ol>
+<p>在 redis 中其实也是这样的，可以在 redis 源码的<code>ae_epoll.c</code>文件中看到epoll的三个步骤。</p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.instant", "navigation.tabs", "navigation.expand"], "search": "../../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.83f73b43.min.js"></script>
+      
+    
+  </body>
+</html>

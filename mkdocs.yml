@@ -1,0 +1,11 @@
+site_name: 作草分茶
+theme:
+  name: material
+  features:
+    - navigation.instant
+    - navigation.tabs
+#    平铺侧边导航栏
+#    - navigation.sections
+#    默认展开侧边导航栏
+    - navigation.expand
+#    - navigation.tabs.sticky
