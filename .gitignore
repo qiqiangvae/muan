@@ -2,7 +2,7 @@ node_modules
 .idea/
 .temp
 .cache
-**/dist
+# **/dist
 **/build.tar
 .fleet
 **.log
