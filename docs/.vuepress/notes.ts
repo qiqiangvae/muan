@@ -20,8 +20,8 @@ const notesConfig = defineNotesConfig({
       sidebar: "auto",
     },
     {
-      dir: "advancedTechnology",
-      link: "/advancedTechnology/",
+      dir: "advanced",
+      link: "/advanced/",
       sidebar: "auto",
     },
     {
