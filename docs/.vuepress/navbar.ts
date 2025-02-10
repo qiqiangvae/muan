@@ -13,9 +13,14 @@ const navbarConfig = defineNavbarConfig([
     link: "/java/toolUsage/79030a/",
   },
   {
-    text: "前沿技术",
+    text: "云原生",
     icon: "devicon-plain:docker",
-    link: "/advanced/cloudNative/d3cfc7/",
+    link: "/cloudNative/d3cfc7/",
+  },
+  {
+    text: "大模型",
+    icon: "hugeicons:chat-gpt",
+    link: "/llm/start/",
   },
   {
     text: "Linux",
